@@ -4,19 +4,34 @@ A comprehensive collection of security testing resources and payloads for bug bo
 
 ## 📁 Repository Structure
 
-### OWASP Top 10 Payloads
-This repository contains a complete collection of testing payloads organized by the OWASP Top 10 (2021) security risk categories.
+### Vulnerability Payloads by Type
+This repository contains a complete collection of testing payloads organized by vulnerability type.
 
-- **[A01 - Broken Access Control](./OWASP-Top-10/A01-Broken-Access-Control/)** - Path traversal, IDOR, privilege escalation
-- **[A02 - Cryptographic Failures](./OWASP-Top-10/A02-Cryptographic-Failures/)** - Weak crypto, hardcoded credentials
-- **[A03 - Injection](./OWASP-Top-10/A03-Injection/)** - SQL, XSS, Command, LDAP injection
-- **[A04 - Insecure Design](./OWASP-Top-10/A04-Insecure-Design/)** - Business logic flaws
-- **[A05 - Security Misconfiguration](./OWASP-Top-10/A05-Security-Misconfiguration/)** - Default credentials, misconfigurations
-- **[A06 - Vulnerable Components](./OWASP-Top-10/A06-Vulnerable-Outdated-Components/)** - Known vulnerable libraries
-- **[A07 - Authentication Failures](./OWASP-Top-10/A07-Identification-Authentication-Failures/)** - Auth bypass, weak passwords
-- **[A08 - Integrity Failures](./OWASP-Top-10/A08-Software-Data-Integrity-Failures/)** - Deserialization attacks
-- **[A09 - Logging Failures](./OWASP-Top-10/A09-Security-Logging-Monitoring-Failures/)** - Log injection
-- **[A10 - SSRF](./OWASP-Top-10/A10-Server-Side-Request-Forgery/)** - Server-side request forgery
+**Injection Vulnerabilities:**
+- **[SQL Injection](./SQL-Injection/)** - Database query manipulation
+- **[XSS (Cross-Site Scripting)](./XSS/)** - Client-side code injection
+- **[Command Injection](./Command-Injection/)** - OS command execution
+- **[LDAP Injection](./LDAP-Injection/)** - Directory service manipulation
+- **[Log Injection](./Log-Injection/)** - Log file manipulation
+
+**Access Control Vulnerabilities:**
+- **[Path Traversal](./Path-Traversal/)** - Directory traversal attacks
+- **[IDOR](./IDOR/)** - Insecure direct object references
+- **[Open Redirect](./Open-Redirect/)** - Unvalidated redirects
+
+**Authentication & Authorization:**
+- **[Authentication Bypass](./Authentication-Bypass/)** - Auth bypass techniques
+- **[Weak Passwords](./Weak-Passwords/)** - Common weak passwords and defaults
+
+**Server-Side Vulnerabilities:**
+- **[SSRF](./SSRF/)** - Server-side request forgery
+- **[Deserialization](./Deserialization/)** - Insecure deserialization
+
+**Configuration & Design:**
+- **[Security Misconfiguration](./Security-Misconfiguration/)** - Default credentials, misconfigurations
+- **[Business Logic](./Business-Logic/)** - Business logic flaws
+- **[Weak Cryptography](./Weak-Cryptography/)** - Weak crypto implementations
+- **[Vulnerable Components](./Vulnerable-Components/)** - Known vulnerable libraries
 
 ## 🎯 Purpose
 
@@ -41,8 +56,8 @@ Unauthorized testing is illegal and unethical. Always follow responsible disclos
 
 ## 🚀 Getting Started
 
-1. Navigate to the [OWASP-Top-10](./OWASP-Top-10/) directory
-2. Choose the vulnerability category you want to test
+1. Choose the vulnerability type you want to test from the list above
+2. Navigate to the corresponding directory
 3. Review the README.md for context and methodology
 4. Use the payload files in your authorized testing
 
