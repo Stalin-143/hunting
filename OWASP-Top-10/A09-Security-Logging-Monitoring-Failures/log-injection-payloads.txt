@@ -32,18 +32,19 @@ user\x00admin
 /var/log/auth.log
 ../../../var/log/syslog
 
-# Events that should be logged (test if they're logged)
-- Failed login attempts
-- Successful login
-- Password changes
-- Privilege escalation
-- Administrative actions
-- Access to sensitive data
-- Invalid input
-- Authentication failures
-- Authorization failures
+# Events to test if they appear in logs
+# Try these payloads and verify they are logged appropriately:
+# - Failed login attempts
+# - Successful login
+# - Password changes
+# - Privilege escalation attempts
+# - Administrative actions
+# - Access to sensitive data
+# - Invalid input
+# - Authentication failures
+# - Authorization failures
 
-# Events to check in logs
+# Sample payloads to check logging behavior
 SELECT * FROM users WHERE username='admin' AND password='wrong'
 <script>alert('XSS')</script>
 ../../../etc/passwd
