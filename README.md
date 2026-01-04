@@ -9,8 +9,10 @@ This repository contains a complete collection of testing payloads organized by 
 
 **Injection Vulnerabilities:**
 - **[SQL Injection](./SQL-Injection/)** - Database query manipulation
+- **[NoSQL Injection](./NoSQL-Injection/)** - NoSQL database injection (MongoDB, Redis, CouchDB)
 - **[XSS (Cross-Site Scripting)](./XSS/)** - Client-side code injection
-- **[Command Injection](./Command-Injection/)** - OS command execution
+- **[Command Injection](./Command-Injection/)** - OS command execution & symbolic link attacks
+- **[CSV Injection](./CSV-Injection/)** - Formula injection in spreadsheets
 - **[LDAP Injection](./LDAP-Injection/)** - Directory service manipulation
 - **[Log Injection](./Log-Injection/)** - Log file manipulation
 - **[XML Injection](./XML-Injection/)** - XML and XXE attacks
@@ -28,6 +30,7 @@ This repository contains a complete collection of testing payloads organized by 
 **Server-Side Vulnerabilities:**
 - **[SSRF](./SSRF/)** - Server-side request forgery
 - **[Deserialization](./Deserialization/)** - Insecure deserialization
+- **[File Upload](./File-Upload/)** - Malicious file upload & RCE techniques
 
 **Configuration & Design:**
 - **[Security Misconfiguration](./Security-Misconfiguration/)** - Default credentials, misconfigurations

