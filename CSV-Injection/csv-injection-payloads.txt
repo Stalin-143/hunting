@@ -238,7 +238,7 @@ Review: +cmd|'/c calc'!A1
 
 # Circular references
 =A1
-(in cell A1 itself, causes circular reference)
+# Note: When placed in cell A1 itself, this causes a circular reference error
 
 # ============================
 # Remote File Inclusion

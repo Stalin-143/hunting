@@ -491,9 +491,13 @@ shell.jspx
 # ============================
 # RACE CONDITION FILE UPLOAD
 # ============================
+# RACE CONDITION FILE UPLOAD
+# ============================
 
 # Upload file quickly and access before validation/deletion
 # Technique: Concurrent upload and access requests
+# Example: Upload shell.php and immediately request http://target.com/uploads/shell.php
+# Use tools like Burp Suite Turbo Intruder or custom scripts to send simultaneous requests
 
 # ============================
 # FILE UPLOAD WITH SIZE BYPASS
