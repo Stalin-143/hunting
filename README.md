@@ -13,6 +13,8 @@ This repository contains a complete collection of testing payloads organized by 
 - **[Command Injection](./Command-Injection/)** - OS command execution
 - **[LDAP Injection](./LDAP-Injection/)** - Directory service manipulation
 - **[Log Injection](./Log-Injection/)** - Log file manipulation
+- **[XML Injection](./XML-Injection/)** - XML and XXE attacks
+- **[Prompt Injection](./Prompt-Injection/)** - AI/LLM prompt manipulation
 
 **Access Control Vulnerabilities:**
 - **[Path Traversal](./Path-Traversal/)** - Directory traversal attacks
@@ -69,11 +71,21 @@ Unauthorized testing is illegal and unethical. Always follow responsible disclos
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please ensure:
-- All content is legal and ethical
-- Payloads are well-documented
-- Structure follows existing patterns
+Contributions are welcome! Please read our [Contributing Guidelines](./CONTRIBUTING.md) before submitting.
+
+Quick guidelines:
+- All content must be legal and ethical
+- Payloads should be well-documented
+- Follow existing structure and patterns
 - Focus on educational value
+
+For detailed information on how to contribute, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## ⚖️ Legal Disclaimer
+
+**IMPORTANT**: Read our [Legal Disclaimer](./DISCLAIMER.md) before using any content from this repository.
+
+This repository is for **EDUCATIONAL AND AUTHORIZED TESTING PURPOSES ONLY**. Unauthorized access to computer systems is illegal.
 
 ## 📜 License
 
