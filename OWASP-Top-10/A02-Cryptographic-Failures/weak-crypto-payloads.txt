@@ -1,0 +1,23 @@
+# Common Weak Hashes for Testing
+
+# MD5 hashes (weak)
+5f4dcc3b5aa765d61d8327deb882cf99  # password
+e10adc3949ba59abbe56e057f20f883e  # 123456
+25d55ad283aa400af464c76d713c07ad  # 12345678
+202cb962ac59075b964b07152d234b70  # 123
+
+# SHA1 hashes (weak)
+5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8  # password
+7c4a8d09ca3762af61e59520943dc26494f8941b  # 123456
+7c222fb2927d828af22f592134e8932480637c0d  # 12345678
+
+# Common encoded credentials
+YWRtaW46YWRtaW4=  # admin:admin (base64)
+cm9vdDpyb290  # root:root (base64)
+dGVzdDp0ZXN0  # test:test (base64)
+
+# Common API keys pattern (for detection testing)
+AKIA[0-9A-Z]{16}  # AWS Access Key pattern
+[0-9a-zA-Z]{32}  # Generic 32-char key
+ghp_[0-9a-zA-Z]{36}  # GitHub Personal Access Token pattern
+sk_live_[0-9a-zA-Z]{24}  # Stripe Live Secret Key pattern

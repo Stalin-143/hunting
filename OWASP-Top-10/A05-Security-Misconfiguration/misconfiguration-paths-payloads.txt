@@ -1,0 +1,78 @@
+# Common Misconfiguration Paths
+
+# Admin panels
+/admin
+/admin/
+/administrator
+/admin/login
+/admin/dashboard
+/admincp
+/wp-admin
+/admin.php
+/admin.html
+
+# Configuration files
+/.env
+/config.php
+/configuration.php
+/config.yml
+/config.json
+/settings.py
+/web.config
+/application.properties
+/.git/config
+/.aws/credentials
+
+# Backup files
+/backup.sql
+/database.sql
+/dump.sql
+/.backup
+/old
+/backup
+/bak
+/backup.zip
+/site.tar.gz
+
+# Debug/Info pages
+/phpinfo.php
+/info.php
+/test.php
+/debug
+/trace
+/console
+/server-status
+/server-info
+
+# Directory listing
+/.git/
+/.svn/
+/.hg/
+/backup/
+/temp/
+/tmp/
+/logs/
+/log/
+
+# Error pages that expose info
+/error
+/debug
+/exception
+/trace
+
+# Cloud storage misconfigurations
+/.aws/
+/.azure/
+/s3/
+/.docker/
+/kubernetes/
+
+# API documentation
+/api-docs
+/swagger
+/swagger.json
+/swagger-ui
+/api/v1/documentation
+/docs
+/graphql
+/graphiql

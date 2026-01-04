@@ -1,0 +1,46 @@
+# Business Logic Testing Payloads
+
+# Price manipulation
+price=-1
+price=0
+price=0.01
+amount=-1000
+quantity=-5
+
+# Discount abuse
+discount=100
+discount=999
+coupon=UNLIMITED
+promo_code=TEST999
+
+# Race condition payloads
+# Send multiple simultaneous requests to:
+POST /transfer (with same account balance)
+POST /redeem (with same coupon code)
+POST /purchase (with same limited item)
+
+# Workflow bypass attempts
+step=1
+step=3
+skip_step=true
+status=completed
+payment_status=paid
+
+# Account enumeration
+username=admin
+username=administrator
+username=test
+email=admin@example.com
+reset_token=00000000-0000-0000-0000-000000000000
+
+# Rate limiting tests
+# Send 1000 requests in 1 second
+# Send 100 login attempts
+# Send 50 password reset requests
+
+# Authentication bypass patterns
+2fa_enabled=false
+verified=true
+is_admin=true
+role=admin
+skip_verification=true

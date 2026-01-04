@@ -1,0 +1,45 @@
+# Common Vulnerable Components to Check
+
+# JavaScript libraries
+jquery-1.x.x (Multiple XSS vulnerabilities)
+jquery-2.x.x (Before 2.2.0 - XSS)
+angular-1.x.x (Template injection)
+lodash-4.17.x (Prototype pollution)
+bootstrap-3.x.x (XSS vulnerabilities)
+moment.js (ReDoS)
+axios-0.18.x (SSRF)
+
+# Java libraries
+log4j-2.x (Log4Shell - CVE-2021-44228)
+spring-framework-4.x.x (Spring4Shell)
+struts-2.x.x (Multiple RCE)
+commons-collections-3.x (Deserialization)
+jackson-databind (Deserialization issues)
+
+# Python packages
+django-1.x.x (Multiple security issues)
+flask-0.x.x (Various vulnerabilities)
+requests-2.x.x (Security issues)
+pillow-<8.3.2 (Path traversal)
+pyyaml-<5.4 (Arbitrary code execution)
+
+# PHP libraries
+phpmailer-<6.5.0 (RCE)
+wordpress-<5.8 (Multiple vulnerabilities)
+symfony-<4.4.35 (Various issues)
+laravel-<8.75 (Authentication bypass)
+
+# Ruby gems
+rails-<6.1.4.2 (Multiple CVEs)
+devise-<4.8.0 (Security issues)
+nokogiri-<1.11.4 (XXE)
+
+# .NET packages
+Newtonsoft.Json-<13.0.1 (Deserialization)
+System.Text.Json-<5.0.2 (DoS)
+
+# Version detection strings
+Server: Apache/2.4.49 (Vulnerable to path traversal)
+X-Powered-By: PHP/7.3.0 (EOL)
+X-AspNet-Version: 4.0.30319
+Server: nginx/1.10.3 (Outdated)

