@@ -12,6 +12,7 @@ This repository contains a complete collection of testing payloads organized by 
 - **[NoSQL Injection](./NoSQL-Injection/)** - NoSQL database injection (MongoDB, Redis, CouchDB)
 - **[XSS (Cross-Site Scripting)](./XSS/)** - Client-side code injection
 - **[Command Injection](./Command-Injection/)** - OS command execution & symbolic link attacks
+- **[SSTI (Server-Side Template Injection)](./SSTI/)** - Template engine exploitation & RCE
 - **[CSV Injection](./CSV-Injection/)** - Formula injection in spreadsheets
 - **[LDAP Injection](./LDAP-Injection/)** - Directory service manipulation
 - **[Log Injection](./Log-Injection/)** - Log file manipulation
@@ -34,6 +35,9 @@ This repository contains a complete collection of testing payloads organized by 
 
 **Configuration & Design:**
 - **[Security Misconfiguration](./Security-Misconfiguration/)** - Default credentials, misconfigurations
+- **[CORS Misconfiguration](./CORS-Misconfiguration/)** - Cross-origin resource sharing issues
+- **[HTTP Request Smuggling](./HTTP-Request-Smuggling/)** - Request desynchronization attacks
+- **[JWT Vulnerabilities](./JWT-Vulnerabilities/)** - JSON Web Token implementation flaws
 - **[Business Logic](./Business-Logic/)** - Business logic flaws
 - **[Weak Cryptography](./Weak-Cryptography/)** - Weak crypto implementations
 - **[Vulnerable Components](./Vulnerable-Components/)** - Known vulnerable libraries

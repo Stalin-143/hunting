@@ -21,3 +21,208 @@ AKIA[0-9A-Z]{16}  # AWS Access Key pattern
 [0-9a-zA-Z]{32}  # Generic 32-char key
 ghp_[0-9a-zA-Z]{36}  # GitHub Personal Access Token pattern
 sk_live_[0-9a-zA-Z]{24}  # Stripe Live Secret Key pattern
+
+# Weak encryption algorithms
+# DES (Data Encryption Standard) - 56-bit key
+DES
+DES-CBC
+DES-ECB
+DES-EDE
+DES-EDE-CBC
+
+# 3DES with weak keys
+3DES
+DES-EDE3
+DES-EDE3-CBC
+
+# RC4 (Rivest Cipher 4)
+RC4
+RC4-40
+RC4-128
+ARCFOUR
+
+# RC2
+RC2
+RC2-40-CBC
+RC2-64-CBC
+RC2-CBC
+
+# MD5 hash algorithm (broken)
+MD5
+MD5-SHA1
+
+# SHA1 hash algorithm (weak)
+SHA1
+SHA-1
+
+# Weak RSA key sizes
+RSA-512
+RSA-768
+RSA-1024
+
+# ECB mode (Electronic Codebook) - deterministic
+AES-128-ECB
+AES-192-ECB
+AES-256-ECB
+
+# Weak padding schemes
+PKCS1-v1_5
+PKCS#1 v1.5
+
+# Null encryption
+NULL
+eNULL
+NULL-MD5
+NULL-SHA
+
+# Export grade ciphers
+EXP-DES-CBC-SHA
+EXP-RC2-CBC-MD5
+EXP-RC4-MD5
+
+# Anonymous key exchange (no authentication)
+AECDH
+ADH
+aNULL
+
+# Weak Diffie-Hellman
+DH-512
+DH-1024
+
+# CBC with weak MAC (BEAST/POODLE vulnerable)
+TLS_RSA_WITH_AES_128_CBC_SHA
+TLS_RSA_WITH_AES_256_CBC_SHA
+TLS_RSA_WITH_3DES_EDE_CBC_SHA
+
+# SSL/TLS version issues
+SSLv2
+SSLv3
+TLSv1.0
+TLSv1.1
+
+# Weak cipher suites
+TLS_RSA_WITH_RC4_128_SHA
+TLS_RSA_WITH_RC4_128_MD5
+TLS_RSA_WITH_DES_CBC_SHA
+TLS_DH_anon_WITH_AES_128_CBC_SHA
+
+# XOR cipher (trivial)
+XOR
+
+# Caesar cipher
+ROT13
+ROT47
+
+# Vigenere cipher patterns
+VIGENERE
+
+# Insecure random number generators
+# Predictable seeds
+PRNG with time() seed
+Math.random()
+rand()
+srand(time())
+
+# Weak key derivation functions
+PBKDF1
+MD5-based KDF
+SHA1-based KDF
+
+# Hardcoded encryption keys (testing patterns)
+key=00000000000000000000000000000000
+key=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+key=12345678901234567890123456789012
+secretkey=admin
+encryptionKey=password
+
+# Weak initialization vectors
+IV=00000000000000000000000000000000
+IV=11111111111111111111111111111111
+Fixed IV
+Reused IV
+
+# Predictable salts
+salt=salt
+salt=123456
+salt=""
+No salt
+
+# Hash collision examples
+# MD5 collisions
+d131dd02c5e6eec4693d9a0698aff95c  # Collision pair 1
+d131dd02c5e6eec4693d9a0698aff95c  # Collision pair 2
+
+# Timing attack vulnerabilities
+String comparison without constant time
+strcmp() without timing safety
+
+# Padding oracle indicators
+PaddingException
+Invalid padding
+Bad padding
+
+# ECB detection patterns (identical blocks)
+Block1: 0123456789ABCDEF
+Block2: 0123456789ABCDEF
+
+# Weak HMAC
+HMAC-MD5
+HMAC-SHA1
+
+# CRC (not cryptographic)
+CRC32
+CRC16
+ADLER32
+
+# Length extension attacks
+SHA-256 without HMAC
+SHA-512 without HMAC
+
+# Insecure modes of operation
+CTR without authentication
+CBC without HMAC
+OFB mode
+
+# Bit flipping attack vectors
+CBC mode tampering
+CFB mode tampering
+
+# Known weak parameters
+p=2  # Weak prime
+g=1  # Weak generator
+e=3  # Weak RSA exponent
+
+# Textbook RSA (no padding)
+RSA without OAEP
+RSA without PSS
+
+# Weak digital signatures
+DSA with k reuse
+ECDSA with k reuse
+DSA-SHA1
+
+# Certificate issues
+Self-signed certificates
+Expired certificates
+MD5 certificate signature
+SHA1 certificate signature
+
+# Java Cipher strings (weak)
+AES/ECB/NoPadding
+AES/ECB/PKCS5Padding
+DES/ECB/PKCS5Padding
+DESede/ECB/PKCS5Padding
+
+# OpenSSL weak ciphers
+openssl enc -des
+openssl enc -des3
+openssl enc -rc4
+
+# Bcrypt with low cost
+bcrypt cost < 10
+bcrypt rounds = 1
+
+# Scrypt with weak parameters
+N=2^10 (too low)
+r=1 (too low)
+p=1 (too low)

