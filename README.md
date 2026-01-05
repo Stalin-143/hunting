@@ -26,6 +26,7 @@ This repository contains a complete collection of testing payloads organized by 
 
 **Authentication & Authorization:**
 - **[Authentication Bypass](./Authentication-Bypass/)** - Auth bypass techniques
+- **[Password Reset](./Password-Reset/)** - Password reset vulnerabilities & account takeover
 - **[Weak Passwords](./Weak-Passwords/)** - Common weak passwords and defaults
 
 **Server-Side Vulnerabilities:**

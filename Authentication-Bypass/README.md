@@ -14,5 +14,8 @@ Authentication bypass vulnerabilities allow an attacker to gain access to a syst
 ## Testing Approach
 Test authentication mechanisms for logical flaws, parameter manipulation, and bypass techniques that allow unauthorized access.
 
+## Related Resources
+For comprehensive password reset vulnerability testing, see the **[Password Reset](../Password-Reset/)** directory which contains detailed PoC examples and specialized payloads for password reset attacks.
+
 ## Payloads
 See `auth-bypass-payloads.txt` for a comprehensive list of authentication bypass payloads and techniques.

