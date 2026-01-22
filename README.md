@@ -95,6 +95,14 @@ Quick guidelines:
 
 For detailed information on how to contribute, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
+## 🏆 Contributors
+
+A huge thank you to all our amazing contributors! This project wouldn't be possible without your support. 🙏
+
+See our [**Contributors Hall of Fame**](./CONTRIBUTORS.md) to view all contributors with their GitHub profiles!
+
+All contributors are automatically recognized and added to our hall of fame when they contribute to this repository. ✨
+
 ## ⚖️ Legal Disclaimer
 
 **IMPORTANT**: Read our [Legal Disclaimer](./DISCLAIMER.md) before using any content from this repository.
