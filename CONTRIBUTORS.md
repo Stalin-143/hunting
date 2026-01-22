@@ -22,7 +22,7 @@ This page is automatically updated to recognize everyone who has contributed to 
         <a href="https://github.com/HARSHITHA-SREE">
             <img src="https://avatars.githubusercontent.com/u/185629164?v=4" width="100;" alt="HARSHITHA-SREE"/>
             <br />
-            <sub><b>Null</b></sub>
+            <sub><b>HARSHITHA-SREE</b></sub>
         </a>
     </td></tr>
 </table>
