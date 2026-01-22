@@ -244,6 +244,26 @@ Always test in authorized environments:
 
 All contributors will be recognized for their valuable contributions to the security community. Thank you for helping make this resource better!
 
+### 🏆 Contributors Hall of Fame
+
+We maintain a [**Contributors Hall of Fame**](./CONTRIBUTORS.md) that automatically recognizes all contributors to this project! 
+
+**How it works:**
+- When you make a contribution (pull request that gets merged), you'll automatically be added to our contributors page
+- Your GitHub profile picture and username will be displayed
+- The list is updated automatically via GitHub Actions
+- No manual process needed - just contribute and you'll be recognized! 🌟
+
+**What contributions count:**
+- Adding new payloads or vulnerability types
+- Improving documentation
+- Fixing bugs or errors
+- Enhancing repository organization
+- Code reviews and feedback
+- Any merged pull request
+
+Check out our [Contributors Hall of Fame](./CONTRIBUTORS.md) to see all the amazing people who have contributed!
+
 ## ⚖️ Legal Reminder
 
 By contributing to this repository, you confirm that:

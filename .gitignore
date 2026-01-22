@@ -1,0 +1,22 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+*~
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Temporary Files
+*.tmp
+*.bak
+*.log
+.cache/
+
+# Build artifacts (if any are added in the future)
+node_modules/
+dist/
+build/
