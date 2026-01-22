@@ -15,7 +15,7 @@ This page is automatically updated to recognize everyone who has contributed to 
         <a href="https://github.com/Stalin-143">
             <img src="https://avatars.githubusercontent.com/u/161853795?v=4" width="100;" alt="Stalin-143"/>
             <br />
-            <sub><b>Stalin</b></sub>
+            <sub><b>Stalin-143</b></sub>
         </a>
     </td>
     <td align="center">
