@@ -24,6 +24,13 @@ This page is automatically updated to recognize everyone who has contributed to 
             <br />
             <sub><b>HARSHITHA-SREE</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/reginaldalfret">
+            <img src="https://avatars.githubusercontent.com/u/190122957?v=4" width="100;" alt="reginaldalfret"/>
+            <br />
+            <sub><b>reginaldalfret</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
